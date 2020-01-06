@@ -2,7 +2,7 @@ package pers.jiangyinzuo.carbon.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pers.jiangyinzuo.carbon.http.AjaxResponse;
+import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.domain.dto.UserInfoDTO;
 
 /**
@@ -12,9 +12,7 @@ import pers.jiangyinzuo.carbon.domain.dto.UserInfoDTO;
 public class UserController {
 
     @GetMapping("/user/userInfo")
-    public AjaxResponse getUserInfo() {
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setToken("24");
-        return AjaxResponse.success(userInfoDTO);
+    public HttpResponse getUserInfo() {
+        return HttpResponse.success(new UserInfoDTO(null, "24"));
     }
 }
