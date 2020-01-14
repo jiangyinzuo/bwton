@@ -1,6 +1,7 @@
 package pers.jiangyinzuo.carbon.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.Api;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @Builder
+@Api("用户")
 public class User {
 
     @JsonProperty("user_id")
