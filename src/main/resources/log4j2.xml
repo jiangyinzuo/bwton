@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="10">
+    <Properties>
+        <Property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
+        <Property name="FILE_PATH" value="./logs" />
+        <Property name="FILE_NAME" value="bwton-carbon-credit" />
+    </Properties>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="${LOG_PATTERN}" />
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+
+        <file name="fileTmp" fileName="${FILE_PATH}/tmp.log" append="false">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </file>
+
+        <RollingFile name="rollingFileInfo" fileName="${FILE_PATH}/info.log" filePattern="${FILE_PATH}/${FILE_NAME}-%d{yyyy-MM-dd}.log" append="true">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- 此行以下为自动清理日志的配置 -->
+            <DefaultRolloverStrategy>
+                <Delete basePath="./logs">
+                    <!-- glob 项为需要自动清理日志的pattern -->
+                    <IfFileName glob="*.log"/>
+                    <!-- 30d 表示自动清理掉30天以前的日志文件 -->
+                    <IfLastModified age="2d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <RollingFile name="rollingFileWarn" fileName="${FILE_PATH}/warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-%d{yyyy-MM-dd}.log">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- 此行以下为自动清理日志的配置 -->
+            <DefaultRolloverStrategy>
+                <Delete basePath="./logs">
+                    <!-- glob 项为需要自动清理日志的pattern -->
+                    <IfFileName glob="*.log"/>
+                    <!-- 30d 表示自动清理掉30天以前的日志文件 -->
+                    <IfLastModified age="30d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <RollingFile name="rollingFileError" fileName="${FILE_PATH}/error.log" filePattern="${FILE_PATH}/${FILE_NAME}-%d{yyyy-MM-dd}.log">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- 此行以下为自动清理日志的配置 -->
+            <DefaultRolloverStrategy>
+                <Delete basePath="./logs">
+                    <!-- glob 项为需要自动清理日志的pattern -->
+                    <IfFileName glob="*.log"/>
+                    <!-- 30d 表示自动清理掉30天以前的日志文件 -->
+                    <IfLastModified age="30d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.springframework" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="springfox.documentation" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Logger name="org.apache" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="fileTmp" />
+            <AppenderRef ref="rollingFileInfo" />
+            <AppenderRef ref="rollingFileWarn" />
+            <AppenderRef ref="rollingFileError" />
+        </Root>
+    </Loggers>
+</Configuration>
