@@ -24,6 +24,6 @@ hs_err_pid*
 
 # IDEA
 /.idea/
-bwton-carbon-credit.iml
-/target/
-/src/main/docker/lib/
+*.iml
+*/target/
+*/lib/
