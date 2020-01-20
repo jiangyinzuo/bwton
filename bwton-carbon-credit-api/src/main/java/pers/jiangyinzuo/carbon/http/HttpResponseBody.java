@@ -13,12 +13,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @ApiModel("HTTP Response")
-public class HttpResponse<T> {
+public class HttpResponseBody<T> {
 
     @ApiModelProperty("错误码，成功时返回数字0")
     private int errCode;
 
-    @ApiModelProperty("错误信息，成功时返回null")
+    @ApiModelProperty("错误信息，成功时返回'ok'")
     private String errMsg;
 
     @ApiModelProperty("请求结果")

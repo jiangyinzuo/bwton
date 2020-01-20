@@ -30,8 +30,8 @@ public class HttpExceptionHandler {
 
     private static Map<String, Object> initBody(String errMsg) {
         Map<String, Object> body = new HashMap<>(10);
-        body.put("errcode", -1);
-        body.put("errmsg", errMsg);
+        body.put("errCode", -1);
+        body.put("errMsg", errMsg);
         return body;
     }
 }
