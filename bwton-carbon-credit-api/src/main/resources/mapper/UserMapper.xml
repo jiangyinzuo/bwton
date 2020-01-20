@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.jiangyinzuo.carbon.mapper.UserMapper">
+    <select id="getUserAccountByUserId" resultType="pers.jiangyinzuo.carbon.domain.dto.UserAccountDTO">
+        SELECT telephone, password FROM bwton_user WHERE user_id = #{userId}
+    </select>
+</mapper>
