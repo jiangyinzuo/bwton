@@ -9,10 +9,12 @@ public class CustomHttpException extends RuntimeException {
 
     private final HttpStatus statusCode;
     private final String errMsg;
+    private final int errCode;
 
-    public CustomHttpException(HttpStatus statusCode, String errMsg) {
+    public CustomHttpException(HttpStatus statusCode, String errMsg, int errCode) {
         this.statusCode = statusCode;
         this.errMsg = errMsg;
+        this.errCode = errCode;
     }
 
     public HttpStatus getStatusCode() {
@@ -21,5 +23,9 @@ public class CustomHttpException extends RuntimeException {
 
     public String getErrMsg() {
         return errMsg;
+    }
+
+    public int getErrCode() {
+        return errCode;
     }
 }

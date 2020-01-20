@@ -27,8 +27,6 @@ public class UserMapperTest {
 
     @Test
     public void testRegister() {
-        assertThrows(DuplicateKeyException.class, () -> {
-            userMapper.saveUserAccount("李四", "123456", SaltGenerator.getSalt32(), "13012345678");
-        });
+        assertThrows(DuplicateKeyException.class, () -> userMapper.saveUserAccount("李四", "123456", SaltGenerator.getSalt32(), "13012345678"));
     }
 }

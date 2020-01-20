@@ -2,9 +2,11 @@ package pers.jiangyinzuo.carbon.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.dao.UserMapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserAccountDTO;
+import pers.jiangyinzuo.carbon.http.CustomHttpException;
 import pers.jiangyinzuo.carbon.service.AccountService;
 
 import static pers.jiangyinzuo.carbon.service.AccountService.LOGIN_STATUS.*;
@@ -36,8 +38,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             userMapper.saveUserAccount(nickname, telephone, salt, password);
         } catch (DuplicateKeyException e) {
-
+            throw new CustomHttpException(HttpStatus.ACCEPTED, "手机号已被注册", 1);
         }
-
     }
 }
