@@ -1,5 +1,6 @@
 package pers.jiangyinzuo.carbon.http;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -22,5 +23,6 @@ public class HttpResponseBody<T> {
     private String errMsg;
 
     @ApiModelProperty("请求结果")
-    T result;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    T data;
 }

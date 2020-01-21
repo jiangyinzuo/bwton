@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DuplicateKeyException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
-import pers.jiangyinzuo.carbon.domain.dto.UserAccountDTO;
+import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,9 +20,9 @@ public class UserMapperTest {
 
     @Test
     public void testLogin() {
-        UserAccountDTO userAccountDTO = userMapper.getUserAccountByTelephone("13012345678");
-        assertEquals("13012345678", userAccountDTO.getTelephone());
-        assertEquals("abc", userAccountDTO.getPassword());
+        UserLoginDTO userLoginDTO = userMapper.getUserAccountByTelephone("13012345678");
+        assertEquals("13012345678", userLoginDTO.getTelephone());
+        assertEquals("abc", userLoginDTO.getCipher());
     }
 
     @Test

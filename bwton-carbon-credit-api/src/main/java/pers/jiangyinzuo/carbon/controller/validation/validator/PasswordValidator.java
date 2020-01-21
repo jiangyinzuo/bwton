@@ -9,8 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 /**
  * @author Jiang Yinzuo
  */
-public class PasswordValidator implements
-        ConstraintValidator<Password, String> {
+public class PasswordValidator implements ConstraintValidator<Password, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         final String regex = "^(?=^[\\w~`!@#$%^&*()\\-+={}\\[\\]|\\\\;:'\"<>?/.,]+$)(?=.*\\d.*)(?=.*[a-z].*)(?=.*[A-Z].*).{6,15}$";

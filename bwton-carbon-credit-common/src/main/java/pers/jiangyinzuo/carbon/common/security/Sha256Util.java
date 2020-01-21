@@ -25,8 +25,19 @@ public class Sha256Util {
 
     private Sha256Util() {}
 
+    public static String genToken(String password) {
+        byte[] cipherBytes = messageDigest.digest(
+                ArrayUtils.addAll(SaltGenerator.getSalt32(), password.getBytes())
+        );
+        return Hex.encodeHexString(cipherBytes);
+    }
+
     public static String encrypt(String password) {
-        byte[] cipherBytes = messageDigest.digest(ArrayUtils.addAll(password.getBytes(), SaltGenerator.getSalt32()));
+        return encrypt(password, SaltGenerator.getSalt32());
+    }
+
+    public static String encrypt(String password, byte[] salt) {
+        byte[] cipherBytes = messageDigest.digest(ArrayUtils.addAll(password.getBytes(), salt));
         return Hex.encodeHexString(cipherBytes);
     }
 }

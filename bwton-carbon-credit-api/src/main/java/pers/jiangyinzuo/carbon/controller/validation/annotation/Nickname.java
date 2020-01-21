@@ -1,6 +1,6 @@
 package pers.jiangyinzuo.carbon.controller.validation.annotation;
 
-import pers.jiangyinzuo.carbon.controller.validation.validator.PasswordValidator;
+import pers.jiangyinzuo.carbon.controller.validation.validator.NicknameValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,17 +9,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Jiang Yinzuo
  */
 @Documented
-@Constraint(validatedBy = PasswordValidator.class)
+@Constraint(validatedBy = NicknameValidator.class)
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-public @interface Password {
-    String message() default "密码必须包括大写字母、小写字母、数字，且长度在6~15之间";
+public @interface Nickname {
+    String message() default "昵称不能包括特殊字符";
 
     Class<?>[] groups() default {};
 

@@ -3,10 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="pers.jiangyinzuo.carbon.dao.UserMapper">
-    <select id="getUserAccountByTelephone" resultType="pers.jiangyinzuo.carbon.domain.dto.UserAccountDTO">
-        SELECT telephone, password FROM bwton_user WHERE telephone = #{telephone}
+    <select id="getUserAccountByTelephone" resultType="pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO">
+        SELECT telephone, cipher, salt FROM bwton_user WHERE telephone = #{telephone}
     </select>
     <insert id="saveUserAccount">
-        INSERT INTO bwton_user(nickname, password, salt, telephone) VALUES(#{nickname}, #{password}, #{salt}, #{telephone})
+        INSERT INTO bwton_user(nickname, cipher, salt, telephone)
+        VALUES (#{nickname}, #{cipher}, #{salt}, #{telephone})
     </insert>
 </mapper>

@@ -1,10 +1,11 @@
 package pers.jiangyinzuo.carbon.dao;
 
-import pers.jiangyinzuo.carbon.domain.dto.UserAccountDTO;
+import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 
 /**
  * @author Jiang Yinzuo
  */
+
 public interface UserMapper {
 
     /**
@@ -13,15 +14,15 @@ public interface UserMapper {
      * @param telephone 手机号
      * @return 用户账号DTO
      */
-    UserAccountDTO getUserAccountByTelephone(String telephone);
+    UserLoginDTO getUserAccountByTelephone(String telephone);
 
     /**
      * 添加用户账号
      *
      * @param nickname  用户昵称
-     * @param password  用户密码
+     * @param cipher  用户密码
      * @param salt      盐值，用于加密
      * @param telephone 手机号
      */
-    void saveUserAccount(String nickname, String password, byte[] salt, String telephone);
+    void saveUserAccount(String nickname, String cipher, byte[] salt, String telephone);
 }
