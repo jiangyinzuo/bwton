@@ -18,6 +18,7 @@ import java.util.Objects;
 /**
  * @author Jiang Yinzuo
  */
+@Log4j2
 @ControllerAdvice
 public class HttpExceptionHandler {
 
@@ -36,7 +37,7 @@ public class HttpExceptionHandler {
     @ExceptionHandler({HttpMessageNotReadableException.class, JsonParseException.class})
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleJsonParseException(Exception e) {
-        return new ResponseEntity<>(createBody("JSON解析异常"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createBody("JSON解析错误"), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

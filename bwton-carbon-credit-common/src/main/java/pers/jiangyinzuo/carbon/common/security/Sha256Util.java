@@ -6,6 +6,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 /**
  * @author Jiang Yinzuo
@@ -25,9 +26,10 @@ public class Sha256Util {
 
     private Sha256Util() {}
 
-    public static String genToken(String password) {
+    public static String genToken() {
+        byte[] uuidBytes = UUID.randomUUID().toString().getBytes();
         byte[] cipherBytes = messageDigest.digest(
-                ArrayUtils.addAll(SaltGenerator.getSalt32(), password.getBytes())
+                ArrayUtils.addAll(SaltGenerator.getSalt32(), uuidBytes)
         );
         return Hex.encodeHexString(cipherBytes);
     }
