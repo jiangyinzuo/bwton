@@ -1,4 +1,4 @@
-package pers.jiangyinzuo.carbon.dao;
+package pers.jiangyinzuo.carbon.dao.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;

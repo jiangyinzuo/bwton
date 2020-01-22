@@ -1,4 +1,4 @@
-package pers.jiangyinzuo.carbon.dao;
+package pers.jiangyinzuo.carbon.dao.mapper;
 
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 

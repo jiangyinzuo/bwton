@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Jiang Yinzuo
  */
 @SpringBootApplication
-@MapperScan(basePackages = {"pers.jiangyinzuo.carbon.dao"})
+@MapperScan(basePackages = {"pers.jiangyinzuo.carbon.dao.mapper"})
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
