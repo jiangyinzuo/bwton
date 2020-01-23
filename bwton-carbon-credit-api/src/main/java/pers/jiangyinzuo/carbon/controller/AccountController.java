@@ -9,8 +9,9 @@ import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
 import pers.jiangyinzuo.carbon.http.HttpResponseBody;
 import pers.jiangyinzuo.carbon.service.AccountService;
 import pers.jiangyinzuo.carbon.service.TokenService;
+import pers.jiangyinzuo.carbon.util.HttpUtil;
 
-import javax.validation.constraints.Digits;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.HashMap;
@@ -47,23 +48,23 @@ public class AccountController {
     public HttpResponseBody<Map<String, String>> login(
             @Validated @RequestBody UserLoginDTO userLoginDTO
             ) {
-        AccountService.LOGIN_STATUS status = accountService.login(userLoginDTO);
-        if (status.equals(AccountService.LOGIN_STATUS.SUCCESS)) {
+        Long userId = accountService.login(userLoginDTO);
+        if (userId > 0) {
             Map<String, String> data = new HashMap<>(1);
-            data.put("token", Sha256Util.genToken());
+            data.put("token", tokenService.genBase64Token(userId.toString()));
             return new HttpResponseBody<>(0, "ok", data);
         } else {
-            return new HttpResponseBody<>(1, status.getDesc(), null);
+            String desc = userId == AccountService.PASSWORD_ERROR ? "密码错误" : "账号不存在";
+            return new HttpResponseBody<>(1, desc, null);
         }
     }
 
     @PutMapping("/token")
-    public HttpResponseBody<Map<String, String>> refreshToken(
-            @Validated @Max(Long.MAX_VALUE) @Min(1) @RequestParam Long userId
-    ) {
-        String newToken = tokenService.refreshToken(userId);
+    public HttpResponseBody<Map<String, String>> refreshToken(HttpServletRequest request) {
+        String base64Token = HttpUtil.getAuthBase64Token(request);
+        String newBase64Token = tokenService.refreshBase64Token(base64Token);
         Map<String, String> data = new HashMap<>(1);
-        data.put("token", newToken);
+        data.put("token", newBase64Token);
         return new HttpResponseBody<>(0, "ok", data);
     }
 

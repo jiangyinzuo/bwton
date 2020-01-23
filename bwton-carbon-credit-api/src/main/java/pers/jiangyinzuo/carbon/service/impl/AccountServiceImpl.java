@@ -12,7 +12,6 @@ import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
 import pers.jiangyinzuo.carbon.http.CustomHttpException;
 import pers.jiangyinzuo.carbon.service.AccountService;
 
-import static pers.jiangyinzuo.carbon.service.AccountService.LOGIN_STATUS.*;
 
 /**
  * @author Jiang Yinzuo
@@ -28,22 +27,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public LOGIN_STATUS login(UserLoginDTO userLoginDTO) {
+    public Long login(UserLoginDTO userLoginDTO) {
         UserLoginDTO dto = userMapper.getUserAccountByTelephone(userLoginDTO.getTelephone());
         if (dto == null) {
-            return ACCOUNT_NOT_FOUND;
+            return ACCOUNT_NOT_EXIST;
         }
-        if (Sha256Util.encrypt(userLoginDTO.getPassword(), dto.getSalt()).equals(dto.getCipher())) {
-            return SUCCESS;
+        if (Sha256Util.encryptPassword(userLoginDTO.getPassword(), dto.getSalt()).equals(dto.getCipher())) {
+            return dto.getUserId();
         } else {
-            return PASSWORD_NOT_MATCHED;
+            return PASSWORD_ERROR;
         }
     }
 
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
         byte[] salt = SaltGenerator.getSalt32();
-        String cipher = Sha256Util.encrypt(userRegisterDTO.getPassword(), salt);
+        String cipher = Sha256Util.encryptPassword(userRegisterDTO.getPassword(), salt);
         try {
             userMapper.saveUserAccount(
                     userRegisterDTO.getNickname(),

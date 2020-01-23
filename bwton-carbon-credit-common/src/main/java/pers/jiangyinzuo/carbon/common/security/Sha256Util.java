@@ -4,8 +4,10 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -26,20 +28,26 @@ public class Sha256Util {
 
     private Sha256Util() {}
 
-    public static String genToken() {
-        byte[] uuidBytes = UUID.randomUUID().toString().getBytes();
-        byte[] cipherBytes = messageDigest.digest(
-                ArrayUtils.addAll(SaltGenerator.getSalt32(), uuidBytes)
-        );
-        return Hex.encodeHexString(cipherBytes);
+    public static String genCredential() {
+        byte[] credentialBytes = messageDigest.digest(UUID.randomUUID().toString().getBytes());
+        return Hex.encodeHexString(credentialBytes);
     }
 
-    public static String encrypt(String password) {
-        return encrypt(password, SaltGenerator.getSalt32());
+    public static String encryptPassword(String password) {
+        return encryptPassword(password, SaltGenerator.getSalt32());
     }
 
-    public static String encrypt(String password, byte[] salt) {
+    public static String encryptPassword(String password, byte[] salt) {
         byte[] cipherBytes = messageDigest.digest(ArrayUtils.addAll(password.getBytes(), salt));
         return Hex.encodeHexString(cipherBytes);
     }
+
+    public static String genSignature(String credential) {
+        if (credential == null || credential.isBlank()) {
+            return "";
+        }
+        byte[] cipherBytes = messageDigest.digest(credential.getBytes());
+        return Hex.encodeHexString(cipherBytes);
+    }
+    
 }

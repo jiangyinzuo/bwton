@@ -22,16 +22,16 @@ public class TokenCacheImpl implements TokenCache {
     }
 
     @Override
-    public boolean validateToken(Long userId, String token) {
-        String value = valueOperations.get("bt:token:" + userId);
-        if (value == null) {
-            return false;
-        }
-        return value.equals(token);
+    public void setSignature(String userId, String signature) {
+        valueOperations.set(getKeyName(userId), signature, 10, TimeUnit.DAYS);
     }
 
     @Override
-    public void setToken(Long userId, String token) {
-        valueOperations.set("bt:token:" + userId, token, 10, TimeUnit.DAYS);
+    public String getSignature(String userId) {
+        return valueOperations.get(getKeyName(userId));
+    }
+
+    private String getKeyName(String userId) {
+        return "bt:user:" + userId + ":sk";
     }
 }

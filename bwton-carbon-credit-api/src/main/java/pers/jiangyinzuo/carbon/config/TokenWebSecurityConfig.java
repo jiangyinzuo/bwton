@@ -1,15 +1,11 @@
 package pers.jiangyinzuo.carbon.config;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pers.jiangyinzuo.carbon.service.TokenService;
-import pers.jiangyinzuo.carbon.service.impl.TokenServiceImpl;
+import pers.jiangyinzuo.carbon.util.HttpUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -36,6 +32,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * @author Jiang Yinzuo
@@ -66,6 +63,7 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(tokenAuthenticationProvider);
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -107,8 +105,6 @@ class TokenAuthenticationProvider implements AuthenticationProvider {
 @Component
 class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION_PREFIX = "Bearer ";
-
     private TokenService tokenService;
 
     @Autowired
@@ -122,13 +118,11 @@ class TokenAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith(AUTHORIZATION_PREFIX)) {
-            String[] token = authHeader.substring(7).split(":", 2);
+        String base64Token = HttpUtil.getAuthBase64Token(request);
+        if (base64Token != null) {
             try {
-                Long userId = Long.parseLong(token[0]);
-                SecurityContextHolder.getContext().setAuthentication(new AuthenticationToken(tokenService.validateToken(userId, token[1])));
-            } catch (NumberFormatException e) {
+                SecurityContextHolder.getContext().setAuthentication(new AuthenticationToken(tokenService.authenticate(base64Token)));
+            } catch (IllegalArgumentException e) {
                 SecurityContextHolder.getContext().setAuthentication(new AuthenticationToken(false));
             }
         } else {

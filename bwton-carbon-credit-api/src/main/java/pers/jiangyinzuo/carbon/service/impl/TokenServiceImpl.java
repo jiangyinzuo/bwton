@@ -6,6 +6,9 @@ import pers.jiangyinzuo.carbon.common.security.Sha256Util;
 import pers.jiangyinzuo.carbon.dao.cache.TokenCache;
 import pers.jiangyinzuo.carbon.service.TokenService;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 /**
  * @author Jiang Yinzuo
  */
@@ -20,16 +23,29 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public boolean validateToken(Long userId, String token) {
-        return tokenCache.validateToken(userId, token);
+    public boolean authenticate(String base64Token) {
+        String token = new String(Base64.getUrlDecoder().decode(base64Token), StandardCharsets.UTF_8);
+        String[] pair = token.split(":",2);
+        if (pair.length != 2) {
+            return false;
+        }
+        String signature = tokenCache.getSignature(pair[0]);
+        return signature != null && signature.equals(Sha256Util.genSignature(pair[1]));
     }
 
     @Override
-    public String refreshToken(Long userId) {
-        String newToken = Sha256Util.genToken();
-        tokenCache.setToken(userId, newToken);
-        return newToken;
+    public String refreshBase64Token(String base64Token) {
+        String token = new String(Base64.getUrlDecoder().decode(base64Token), StandardCharsets.UTF_8);
+        String userId = token.split(":")[0];
+        return genBase64Token(userId);
     }
 
+    @Override
+    public String genBase64Token(String userId) {
+        String credential = Sha256Util.genCredential();
+        String signature = Sha256Util.genSignature(credential);
+        tokenCache.setSignature(userId, signature);
+        return Base64.getUrlEncoder().encodeToString((userId + ":" + credential).getBytes());
+    }
 
 }

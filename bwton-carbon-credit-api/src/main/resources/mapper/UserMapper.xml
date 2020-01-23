@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="pers.jiangyinzuo.carbon.dao.mapper.UserMapper">
     <select id="getUserAccountByTelephone" resultType="pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO">
-        SELECT telephone, cipher, salt FROM bwton_user WHERE telephone = #{telephone}
+        SELECT user_id, telephone, cipher, salt FROM bwton_user WHERE telephone = #{telephone}
     </select>
     <insert id="saveUserAccount">
         INSERT INTO bwton_user(nickname, cipher, salt, telephone)

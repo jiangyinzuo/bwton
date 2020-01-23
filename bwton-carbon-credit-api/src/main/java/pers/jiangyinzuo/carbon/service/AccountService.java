@@ -8,30 +8,15 @@ import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
  */
 public interface AccountService {
 
-    enum LOGIN_STATUS {
-        /**
-         * 登录结果
-         */
-        SUCCESS("登录成功"), ACCOUNT_NOT_FOUND("账号不存在"),
-        PASSWORD_NOT_MATCHED("密码错误");
-
-        private String desc;
-
-        public String getDesc() {
-            return desc;
-        }
-
-        LOGIN_STATUS(String desc) {
-            this.desc = desc;
-        }
-    }
+    long PASSWORD_ERROR = -1L;
+    long ACCOUNT_NOT_EXIST = -2L;
 
     /**
      * 登录
      * @param userLoginDTO 用户登录DTO
-     * @return 登录结果
+     * @return 登录结果: 成功返回userId，密码错误返回-1，用户不存在返回-2
      */
-    LOGIN_STATUS login(UserLoginDTO userLoginDTO);
+    Long login(UserLoginDTO userLoginDTO);
 
     /**
      * 注册账号，一个手机号只能注册一个用户账号

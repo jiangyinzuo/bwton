@@ -1,0 +1,50 @@
+package pers.jiangyinzuo.carbon.dao.cache.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Repository;
+import pers.jiangyinzuo.carbon.dao.cache.FriendCache;
+
+import java.util.List;
+
+/**
+ * @author Jiang Yinzuo
+ */
+@Repository
+public class FriendCacheImpl implements FriendCache {
+
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    @Override
+    public boolean addFriend(String userId1, String userId2) {
+        byte[] user1Key = getKeyName(userId1).getBytes();
+        byte[] user2Key = getKeyName(userId2).getBytes();
+        Boolean result = redisTemplate.execute((RedisCallback<Boolean>) conn -> {
+            byte[] totalBytes = conn.get("bt:user:total".getBytes());
+            if (totalBytes == null) {
+                return false;
+            }
+            conn.openPipeline();
+            String total = new String (totalBytes);
+            if (total.compareTo(userId1) >= 0 && total.compareTo(userId2) >= 0) {
+                conn.setCommands().sAdd(user1Key, userId2.getBytes());
+                conn.setCommands().sAdd(user2Key, userId1.getBytes());
+                return true;
+            }
+            return false;
+        });
+        return result != null && result;
+    }
+
+    private String getKeyName(String userId) {
+        return "bt:user:" + userId + ":fri";
+    }
+}
