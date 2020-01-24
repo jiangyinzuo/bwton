@@ -29,8 +29,8 @@ public class FriendCacheImpl implements FriendCache {
                 return false;
             }
             conn.openPipeline();
-            String total = new String (totalBytes);
-            if (total.compareTo(userId1) >= 0 && total.compareTo(userId2) >= 0) {
+            long total = Long.parseLong(new String (totalBytes));
+            if (total >= Long.parseLong(userId1) && total >= Long.parseLong(userId2)) {
                 conn.zSetCommands().zAdd(user1Key, 0, userId2.getBytes());
                 conn.zSetCommands().zAdd(user2Key, 0, userId1.getBytes());
                 return true;

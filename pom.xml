@@ -199,6 +199,12 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -209,15 +215,6 @@
                     <complianceLevel>13</complianceLevel>
                     <source>13</source>
                     <target>13</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${springboot.version}</version>
-                <configuration>
-                    <mainClass>pers.jiangyinzuo.carbon.Application</mainClass>
-                    <fork>true</fork>
                 </configuration>
             </plugin>
             <plugin>

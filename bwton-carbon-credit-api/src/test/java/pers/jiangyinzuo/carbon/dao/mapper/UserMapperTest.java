@@ -22,11 +22,12 @@ public class UserMapperTest {
     public void testLogin() {
         UserLoginDTO userLoginDTO = userMapper.getUserAccountByTelephone("13012345678");
         assertEquals("13012345678", userLoginDTO.getTelephone());
-        assertEquals("abc", userLoginDTO.getCipher());
+        assertEquals(64, userLoginDTO.getCipher().length());
     }
 
     @Test
     public void testRegister() {
         assertThrows(DuplicateKeyException.class, () -> userMapper.saveUserAccount("李四", "123456", SaltGenerator.getSalt32(), "13012345678"));
+        userMapper.saveUserAccount("江胤佐", "222", SaltGenerator.getSalt32(), "13011145678");
     }
 }
