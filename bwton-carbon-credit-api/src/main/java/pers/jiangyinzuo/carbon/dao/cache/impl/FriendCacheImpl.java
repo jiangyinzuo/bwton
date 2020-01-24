@@ -1,14 +1,10 @@
 package pers.jiangyinzuo.carbon.dao.cache.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.FriendCache;
-
-import java.util.List;
 
 /**
  * @author Jiang Yinzuo
@@ -35,8 +31,8 @@ public class FriendCacheImpl implements FriendCache {
             conn.openPipeline();
             String total = new String (totalBytes);
             if (total.compareTo(userId1) >= 0 && total.compareTo(userId2) >= 0) {
-                conn.setCommands().sAdd(user1Key, userId2.getBytes());
-                conn.setCommands().sAdd(user2Key, userId1.getBytes());
+                conn.zSetCommands().zAdd(user1Key, 0, userId2.getBytes());
+                conn.zSetCommands().zAdd(user2Key, 0, userId1.getBytes());
                 return true;
             }
             return false;

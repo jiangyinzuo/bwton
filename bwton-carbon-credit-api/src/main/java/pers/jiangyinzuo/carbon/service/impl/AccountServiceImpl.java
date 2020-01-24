@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.common.security.Sha256Util;
+import pers.jiangyinzuo.carbon.dao.cache.AccountCache;
 import pers.jiangyinzuo.carbon.dao.mapper.UserMapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
@@ -20,10 +21,16 @@ import pers.jiangyinzuo.carbon.service.AccountService;
 public class AccountServiceImpl implements AccountService {
 
     private UserMapper userMapper;
+    private AccountCache accountCache;
 
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         this.userMapper = userMapper;
+    }
+
+    @Autowired
+    public void setAccountCache(AccountCache accountCache) {
+        this.accountCache = accountCache;
     }
 
     @Override
@@ -38,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
             return PASSWORD_ERROR;
         }
     }
-
+    
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
         byte[] salt = SaltGenerator.getSalt32();
@@ -53,5 +60,6 @@ public class AccountServiceImpl implements AccountService {
         } catch (DuplicateKeyException e) {
             throw new CustomHttpException(HttpStatus.ACCEPTED, "手机号已被注册", 1);
         }
+        accountCache.increaseAccountTotal();
     }
 }

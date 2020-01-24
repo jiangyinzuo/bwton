@@ -5,7 +5,6 @@ import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 /**
  * @author Jiang Yinzuo
  */
-
 public interface UserMapper {
 
     /**
