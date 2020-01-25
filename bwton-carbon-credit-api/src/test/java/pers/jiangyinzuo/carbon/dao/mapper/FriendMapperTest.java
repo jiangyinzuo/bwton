@@ -4,14 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -27,5 +24,13 @@ public class FriendMapperTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(24L));
         assertTrue(result.contains(25L));
+    }
+
+    @Test
+    public void testDuplicateInsert() {
+        assertThrows(DuplicateKeyException.class, () -> {
+            friendMapper.addFriends(4L, 5L);
+            friendMapper.addFriends(4L, 5L);
+        });
     }
 }

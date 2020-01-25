@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pers.jiangyinzuo.carbon.service.TokenService;
-import pers.jiangyinzuo.carbon.util.HttpUtil;
+import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -118,7 +118,7 @@ class TokenAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        String base64Token = HttpUtil.getAuthBase64Token(request);
+        String base64Token = HttpHeaderUtil.getAuthBase64Token(request);
         if (base64Token != null) {
             try {
                 SecurityContextHolder.getContext().setAuthentication(new AuthenticationToken(tokenService.authenticate(base64Token)));

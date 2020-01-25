@@ -5,6 +5,8 @@ package pers.jiangyinzuo.carbon.dao.cache;
  */
 public interface FriendCache {
 
+    int FRIENDS_EXPIRE_TIME = 259200;
+
     /**
      * 向缓存中添加好友
      * @param userId1 用户1ID

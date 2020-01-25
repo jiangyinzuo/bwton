@@ -33,6 +33,8 @@ public class FriendCacheImpl implements FriendCache {
             if (total >= Long.parseLong(userId1) && total >= Long.parseLong(userId2)) {
                 conn.zSetCommands().zAdd(user1Key, 0, userId2.getBytes());
                 conn.zSetCommands().zAdd(user2Key, 0, userId1.getBytes());
+                conn.expire(user1Key, FRIENDS_EXPIRE_TIME);
+                conn.expire(user2Key, FRIENDS_EXPIRE_TIME);
                 return true;
             }
             return false;
