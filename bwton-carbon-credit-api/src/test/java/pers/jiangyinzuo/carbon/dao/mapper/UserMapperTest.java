@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
@@ -28,6 +29,5 @@ public class UserMapperTest {
     @Test
     public void testRegister() {
         assertThrows(DuplicateKeyException.class, () -> userMapper.saveUserAccount("李四", "123456", SaltGenerator.getSalt32(), "13012345678"));
-        userMapper.saveUserAccount("江胤佐", "222", SaltGenerator.getSalt32(), "13011145678");
     }
 }

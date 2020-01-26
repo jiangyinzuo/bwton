@@ -1,20 +1,18 @@
 package pers.jiangyinzuo.carbon.controller;
 
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import pers.jiangyinzuo.carbon.dao.mapper.UserMapper;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 import pers.jiangyinzuo.carbon.http.HttpResponseBody;
-import pers.jiangyinzuo.carbon.dao.mapper.UserMapper;
 
 
 /**
  * @author Jiang Yinzuo
  */
 @RestController
-@Api(value = "用户", tags = {"用户"})
 public class UserController {
 
     private UserMapper userMapper;

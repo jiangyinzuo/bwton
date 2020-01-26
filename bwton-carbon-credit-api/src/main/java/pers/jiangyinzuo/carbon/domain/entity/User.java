@@ -1,6 +1,5 @@
 package pers.jiangyinzuo.carbon.domain.entity;
 
-import io.swagger.annotations.Api;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +8,6 @@ import lombok.Data;
  */
 @Data
 @Builder
-@Api("用户")
 public class User {
     private Long userId;
     private String nickname;

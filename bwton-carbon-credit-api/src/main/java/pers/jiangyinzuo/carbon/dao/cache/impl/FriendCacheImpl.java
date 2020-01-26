@@ -2,17 +2,14 @@ package pers.jiangyinzuo.carbon.dao.cache.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisZSetCommands;
-import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.data.redis.support.collections.RedisZSet;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.FriendCache;
 import pers.jiangyinzuo.carbon.domain.dto.CreditDTO;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
