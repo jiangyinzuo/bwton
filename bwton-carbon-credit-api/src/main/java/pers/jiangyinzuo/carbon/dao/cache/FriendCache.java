@@ -1,5 +1,9 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
+import pers.jiangyinzuo.carbon.domain.dto.CreditDTO;
+
+import java.util.List;
+
 /**
  * @author Jiang Yinzuo
  */
@@ -14,4 +18,6 @@ public interface FriendCache {
      * @return 添加成功返回true，失败返回false
      */
     boolean addFriend(String userId1, String userId2);
+
+    List<CreditDTO> getFriendsCredit(Long userId);
 }

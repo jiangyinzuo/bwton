@@ -1,4 +1,4 @@
-package pers.jiangyinzuo.carbon.domain.bo;
+package pers.jiangyinzuo.carbon.domain.dto;
 
 import lombok.Data;
 import pers.jiangyinzuo.carbon.controller.validation.annotation.ID;
@@ -7,7 +7,7 @@ import pers.jiangyinzuo.carbon.controller.validation.annotation.ID;
  * @author Jiang Yinzuo
  */
 @Data
-public class FriendshipBO {
+public class FriendshipDTO {
 
     @ID
     Long userId;
