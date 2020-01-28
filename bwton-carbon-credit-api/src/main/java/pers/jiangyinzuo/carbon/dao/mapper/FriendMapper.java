@@ -19,5 +19,5 @@ public interface FriendMapper {
      * @param userId 用户ID
      * @return 好友列表
      */
-    Set<Long> getFriends(Long userId);
+    Set<Long> getFriendsId(Long userId);
 }

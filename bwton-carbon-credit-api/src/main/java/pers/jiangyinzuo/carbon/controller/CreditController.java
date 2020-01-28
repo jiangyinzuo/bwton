@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pers.jiangyinzuo.carbon.controller.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.dto.CreditDTO;
+import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.http.HttpResponseBody;
-import pers.jiangyinzuo.carbon.service.FriendService;
+import pers.jiangyinzuo.carbon.service.LeaderBoardService;
 
 import java.util.List;
 
@@ -18,16 +19,16 @@ import java.util.List;
 @RestController
 public class CreditController {
 
-    private FriendService friendService;
+    private LeaderBoardService leaderBoardService;
 
     @Autowired
-    public void setFriendService(FriendService friendService) {
-        this.friendService = friendService;
+    public void setLeaderBoardService(LeaderBoardService leaderBoardService) {
+        this.leaderBoardService = leaderBoardService;
     }
 
-    @GetMapping("/leaderboard")
-    public HttpResponseBody<List<CreditDTO>> getFriendsCreditLeaderboard(@Validated @ID @RequestParam Long userId) {
-        List<CreditDTO> data = friendService.getCreditLeaderBoard(userId);
-        return new HttpResponseBody<>(0, "ok", data);
+    @GetMapping("/leaderboard/total/")
+    public HttpResponseBody<LeaderBoardVO> getLeaderBoardInfo(@Validated @ID @RequestParam Long userId) {
+        // TODO: implement leaderBoardService
+        return new HttpResponseBody<>(0, "ok", null);
     }
 }

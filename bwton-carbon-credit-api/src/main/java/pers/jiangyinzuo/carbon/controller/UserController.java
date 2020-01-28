@@ -22,12 +22,12 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @GetMapping("/user/{user_id}")
+    @GetMapping("/users/{user_id}")
     public HttpResponseBody<User> getUser(@PathVariable("user_id") Long userId) {
         return new HttpResponseBody<>(0, null, null);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/users")
     public HttpResponseBody<Object> insertUser(User user) {
         return new HttpResponseBody<>(0, null, null);
     }

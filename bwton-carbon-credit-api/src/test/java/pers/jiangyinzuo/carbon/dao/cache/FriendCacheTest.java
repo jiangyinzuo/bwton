@@ -3,12 +3,8 @@ package pers.jiangyinzuo.carbon.dao.cache;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pers.jiangyinzuo.carbon.domain.dto.CreditDTO;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class FriendCacheTest {
@@ -21,17 +17,12 @@ public class FriendCacheTest {
 
     @Test
     public void testAddFriend() {
-        assertTrue(friendCache.addFriend("1", "2"));
-        assertFalse(friendCache.addFriend(Long.toString(Long.MAX_VALUE), Long.toString(Long.MAX_VALUE - 1)));
+        assertTrue(friendCache.addFriend(1L, 2L));
+        assertFalse(friendCache.addFriend(Long.MAX_VALUE, Long.MAX_VALUE - 1));
     }
 
     @Test
-    public void testGetFriendsCredit() {
-        List<CreditDTO> creditDTOList = friendCache.getFriendsCredit(11L);
-        if (creditDTOList.size() > 2) {
-            CreditDTO dto1 = creditDTOList.get(0);
-            CreditDTO dto2 = creditDTOList.get(1);
-            assertTrue(dto1.getCredit() >= dto2.getCredit());
-        }
+    public void testGetFriendsId() {
+        assertNull(friendCache.getFriendsId(Long.MAX_VALUE));
     }
 }

@@ -5,11 +5,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.dao.cache.FriendCache;
 import pers.jiangyinzuo.carbon.dao.mapper.FriendMapper;
-import pers.jiangyinzuo.carbon.domain.dto.CreditDTO;
 import pers.jiangyinzuo.carbon.domain.dto.FriendshipDTO;
 import pers.jiangyinzuo.carbon.service.FriendService;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Jiang Yinzuo
@@ -42,11 +42,21 @@ public class FriendServiceImpl implements FriendService {
         } catch (DuplicateKeyException e) {
             return false;
         }
-        return friendCache.addFriend(minUserId.toString(), maxUserId.toString());
+        return friendCache.addFriend(minUserId, maxUserId);
     }
 
     @Override
-    public List<CreditDTO> getCreditLeaderBoard(Long userId) {
-        return friendCache.getFriendsCredit(userId);
+    public Set<Long> getFriendsId(Long userId) {
+        Set<Object> friendsSet = friendCache.getFriendsId(userId);
+        Set<Long> result = new HashSet<>();
+        if (friendsSet != null) {
+            for (Object friendId : friendsSet) {
+                result.add(((Number) friendId).longValue());
+            }
+        } else {
+            result = friendMapper.getFriendsId(userId);
+            friendCache.setFriendsId(userId, result);
+        }
+        return result;
     }
 }

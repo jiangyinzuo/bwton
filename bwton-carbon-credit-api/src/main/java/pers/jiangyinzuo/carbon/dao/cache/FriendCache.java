@@ -1,15 +1,13 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
-import pers.jiangyinzuo.carbon.domain.dto.CreditDTO;
-
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jiang Yinzuo
  */
 public interface FriendCache {
 
-    int FRIENDS_EXPIRE_TIME = 259200;
+
 
     /**
      * 向缓存中添加好友
@@ -17,7 +15,14 @@ public interface FriendCache {
      * @param userId2 用户2ID
      * @return 添加成功返回true，失败返回false
      */
-    boolean addFriend(String userId1, String userId2);
+    boolean addFriend(Long userId1, Long userId2);
 
-    List<CreditDTO> getFriendsCredit(Long userId);
+    /**
+     * 获取好友们的ID
+     * @param userId 用户ID
+     * @return 好友ID列表
+     */
+    Set<Object> getFriendsId(Long userId);
+
+    void setFriendsId(Long userId, Set<Long> friendsId);
 }

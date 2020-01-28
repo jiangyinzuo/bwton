@@ -20,7 +20,7 @@ public class FriendMapperTest {
     public void testAddFriend() {
         friendMapper.addFriends(10L, 24L);
         friendMapper.addFriends(10L, 25L);
-        Set<Long> result = friendMapper.getFriends(10L);
+        Set<Long> result = friendMapper.getFriendsId(10L);
         assertEquals(2, result.size());
         assertTrue(result.contains(24L));
         assertTrue(result.contains(25L));

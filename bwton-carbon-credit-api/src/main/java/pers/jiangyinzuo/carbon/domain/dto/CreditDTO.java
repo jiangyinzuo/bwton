@@ -1,6 +1,5 @@
 package pers.jiangyinzuo.carbon.domain.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.redis.core.ZSetOperations;
 
