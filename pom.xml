@@ -10,6 +10,10 @@
     <modules>
         <module>bwton-carbon-credit-common</module>
         <module>bwton-carbon-credit-api</module>
+        <module>bwton-carbon-credit-dao</module>
+        <module>bwton-carbon-credit-domain</module>
+        <module>bwton-carbon-credit-validation</module>
+        <module>bwton-carbon-credit-service</module>
     </modules>
 
     <name>bwton-carbon-credit</name>

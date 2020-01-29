@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import pers.jiangyinzuo.carbon.domain.dto.FriendshipDTO;
-import pers.jiangyinzuo.carbon.http.HttpResponseBody;
+import pers.jiangyinzuo.carbon.common.http.HttpResponseBody;
 import pers.jiangyinzuo.carbon.service.FriendService;
 import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
 

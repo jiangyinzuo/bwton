@@ -5,13 +5,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pers.jiangyinzuo.carbon.controller.validation.annotation.ID;
-import pers.jiangyinzuo.carbon.domain.dto.CreditDTO;
+import pers.jiangyinzuo.carbon.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
-import pers.jiangyinzuo.carbon.http.HttpResponseBody;
+import pers.jiangyinzuo.carbon.common.http.HttpResponseBody;
 import pers.jiangyinzuo.carbon.service.LeaderBoardService;
-
-import java.util.List;
 
 /**
  * @author Jiang Yinzuo

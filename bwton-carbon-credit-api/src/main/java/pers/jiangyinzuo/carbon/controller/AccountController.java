@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
-import pers.jiangyinzuo.carbon.http.HttpResponseBody;
+import pers.jiangyinzuo.carbon.common.http.HttpResponseBody;
 import pers.jiangyinzuo.carbon.service.AccountService;
 import pers.jiangyinzuo.carbon.service.TokenService;
 import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
