@@ -15,5 +15,6 @@ public interface FriendService {
      */
     boolean addFriend(FriendshipDTO friendshipDTO);
 
-    Set<Long> getFriendsId(Long userId);
+    Set<Long> getFriendIds(Long userId);
+
 }

@@ -4,11 +4,13 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.AbstractCache;
 import pers.jiangyinzuo.carbon.dao.cache.FriendCache;
-import pers.jiangyinzuo.carbon.dao.cache.KeyUtil;
+import pers.jiangyinzuo.carbon.dao.cache.KeyBuilder;
+import pers.jiangyinzuo.carbon.domain.entity.User;
 
+import java.util.List;
 import java.util.Set;
 
-import static pers.jiangyinzuo.carbon.dao.cache.KeyUtil.*;
+import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
 
 /**
  * @author Jiang Yinzuo
@@ -18,10 +20,10 @@ public class FriendCacheImpl extends AbstractCache implements FriendCache {
 
     @Override
     public boolean addFriend(Long userId1, Long userId2) {
-        byte[] user1Key = KeyUtil.genUserFriKeyBytes(userId1);
-        byte[] user2Key = KeyUtil.genUserFriKeyBytes(userId2);
+        byte[] user1Key = KeyBuilder.userFriBytes(userId1);
+        byte[] user2Key = KeyBuilder.userFriBytes(userId2);
         Boolean result = redisTemplate.execute((RedisCallback<Boolean>) conn -> {
-            byte[] totalBytes = conn.get("bt:user:total".getBytes());
+            byte[] totalBytes = conn.get(USER_TOTAL.getBytes());
             if (totalBytes == null) {
                 return false;
             }
@@ -42,15 +44,17 @@ public class FriendCacheImpl extends AbstractCache implements FriendCache {
     @Override
     public Set<Object> getFriendsId(Long userId) {
         // 缓存失效
-        if (!redisTemplate.hasKey(genUserFriKey(userId))) {
+        if (!redisTemplate.hasKey(userFri(userId))) {
             return null;
         }
         // 缓存命中
-        return redisTemplate.opsForSet().members(genUserFriKey(userId));
+        return redisTemplate.opsForSet().members(userFri(userId));
     }
 
     @Override
     public void setFriendsId(Long userId, Set<Long> friendsId) {
-        redisTemplate.opsForSet().add(genUserFriKey(userId), friendsId.toArray());
+        redisTemplate.opsForSet().add(userFri(userId), friendsId.toArray());
     }
+
+
 }

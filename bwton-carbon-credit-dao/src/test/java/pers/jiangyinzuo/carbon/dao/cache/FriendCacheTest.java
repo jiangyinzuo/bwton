@@ -1,8 +1,11 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
+import org.assertj.core.util.Sets;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,4 +28,6 @@ public class FriendCacheTest {
     public void testGetFriendsId() {
         assertNull(friendCache.getFriendsId(Long.MAX_VALUE));
     }
+
+
 }

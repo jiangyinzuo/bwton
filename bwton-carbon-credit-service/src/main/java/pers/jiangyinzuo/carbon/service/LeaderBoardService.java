@@ -2,6 +2,8 @@ package pers.jiangyinzuo.carbon.service;
 
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * @author Jiang Yinzuo
  */
@@ -12,5 +14,5 @@ public interface LeaderBoardService {
      * @param userId 用户ID
      * @return LeaderBoardVO
      */
-    LeaderBoardVO getLeaderBoardInfo(Long userId);
+    LeaderBoardVO getTotalLeaderBoard(Long userId) throws InterruptedException, ExecutionException;
 }

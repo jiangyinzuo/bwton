@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Collection;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -16,16 +19,8 @@ public class CreditCacheTest {
     }
 
     @Test
-    public void testGetCredit() {
-        long credit1 = creditCache.getCredit("tss");
-        assertEquals(0L, credit1);
-    }
-
-    @Test
-    public void testAddCredit() {
-        long oldCredit = creditCache.getCredit("1");
-        creditCache.addCredit("1", 3);
-        long newCredit = creditCache.getCredit("1");
-        assertEquals(3, newCredit - oldCredit);
+    public void testGetTotalCredit() {
+        var result = creditCache.getTotalCredits(List.of(1L, 2L));
+        System.out.println(result);
     }
 }

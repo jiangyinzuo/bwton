@@ -24,7 +24,7 @@ public class CreditController {
     }
 
     @GetMapping("/leaderboard/total/")
-    public HttpResponseBody<LeaderBoardVO> getLeaderBoardInfo(@Validated @ID @RequestParam Long userId) {
+    public HttpResponseBody<LeaderBoardVO> getLeaderBoard(@Validated @ID @RequestParam Long userId) {
         // TODO: implement leaderBoardService
         return new HttpResponseBody<>(0, "ok", null);
     }

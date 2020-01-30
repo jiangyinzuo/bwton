@@ -1,13 +1,12 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Jiang Yinzuo
  */
 public interface FriendCache {
-
-
 
     /**
      * 向缓存中添加好友
@@ -25,4 +24,6 @@ public interface FriendCache {
     Set<Object> getFriendsId(Long userId);
 
     void setFriendsId(Long userId, Set<Long> friendsId);
+
+
 }

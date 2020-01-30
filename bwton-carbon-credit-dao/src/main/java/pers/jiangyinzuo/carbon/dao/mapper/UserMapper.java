@@ -2,6 +2,8 @@ package pers.jiangyinzuo.carbon.dao.mapper;
 
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 
+import java.util.List;
+
 /**
  * @author Jiang Yinzuo
  */
@@ -24,4 +26,6 @@ public interface UserMapper {
      * @param telephone 手机号
      */
     void saveUserAccount(String nickname, String cipher, byte[] salt, String telephone);
+
+    List<Object> getUsers(List<Long> userIds);
 }

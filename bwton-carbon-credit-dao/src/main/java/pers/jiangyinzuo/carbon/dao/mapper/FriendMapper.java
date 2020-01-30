@@ -1,5 +1,8 @@
 package pers.jiangyinzuo.carbon.dao.mapper;
 
+import pers.jiangyinzuo.carbon.domain.entity.User;
+
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,4 +23,11 @@ public interface FriendMapper {
      * @return 好友列表
      */
     Set<Long> getFriendsId(Long userId);
+
+    /**
+     * 获取好友基本信息
+     * @param userId 用户ID
+     * @return 好友列表
+     */
+    List<User> getFriendsByUserId(Long userId);
 }

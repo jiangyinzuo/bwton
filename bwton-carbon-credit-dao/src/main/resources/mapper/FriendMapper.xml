@@ -11,4 +11,24 @@
         UNION ALL
         SELECT user1_id AS user_id FROM bwton_friendship WHERE user2_id = #{userId}
     </select>
+    <select id="getFriendsByUserId" resultType="pers.jiangyinzuo.carbon.domain.entity.User">
+        SELECT
+            bwton_user.user_id, bwton_user.nickname, bwton_user.badge
+        FROM
+            bwton_user, bwton_friendship
+        WHERE
+            bwton_friendship.user1_id = #{userId}
+        AND
+            bwton_friendship.user2_id = bwton_user.user_id
+        UNION ALL
+        SELECT
+            bwton_user.user_id, bwton_user.nickname, bwton_user.badge
+        FROM
+            bwton_user, bwton_friendship
+        WHERE
+            bwton_friendship.user2_id = #{userId}
+        AND
+            bwton_friendship.user1_id = bwton_user.user_id
+    </select>
+
 </mapper>

@@ -1,17 +1,25 @@
 package pers.jiangyinzuo.carbon.domain.entity;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Jiang Yinzuo
  */
 @Data
-@Builder
+@AllArgsConstructor
 public class User {
-    private Long userId;
-    private String nickname;
-    private String password;
-    private String telephone;
-    private java.sql.Timestamp createTime;
+    Long userId;
+    String nickname;
+    Long badge;
+
+    public Map<byte[], byte[]> getHash() {
+        Map<byte[], byte[]> hash = new HashMap<>(2);
+        hash.put("nickname".getBytes(), nickname.getBytes());
+        hash.put("badge".getBytes(), badge.toString().getBytes());
+        return hash;
+    }
 }

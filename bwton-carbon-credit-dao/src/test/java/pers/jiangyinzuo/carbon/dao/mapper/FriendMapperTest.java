@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DuplicateKeyException;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,5 +33,10 @@ public class FriendMapperTest {
             friendMapper.addFriends(4L, 5L);
             friendMapper.addFriends(4L, 5L);
         });
+    }
+
+    @Test
+    public void testGetFriends() {
+        assertEquals(1, friendMapper.getFriendsByUserId(1L).size());
     }
 }
