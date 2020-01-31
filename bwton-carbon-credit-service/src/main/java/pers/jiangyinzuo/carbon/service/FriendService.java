@@ -11,10 +11,8 @@ public interface FriendService {
     /**
      * 加好友
      * @param friendshipDTO 好友关系业务对象
-     * @return 添加好友是否成功
      */
-    boolean addFriend(FriendshipDTO friendshipDTO);
+    void addFriend(FriendshipDTO friendshipDTO);
 
     Set<Long> getFriendIds(Long userId);
-
 }

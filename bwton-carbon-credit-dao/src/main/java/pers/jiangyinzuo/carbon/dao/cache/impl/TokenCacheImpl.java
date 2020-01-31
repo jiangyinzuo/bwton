@@ -8,6 +8,8 @@ import pers.jiangyinzuo.carbon.dao.cache.TokenCache;
 
 import java.util.concurrent.TimeUnit;
 
+import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userSignatureKey;
+
 /**
  * @author Jiang Yinzuo
  */
@@ -23,15 +25,11 @@ public class TokenCacheImpl implements TokenCache {
 
     @Override
     public void setSignature(String userId, String signature) {
-        valueOperations.set(getKeyName(userId), signature, 10, TimeUnit.DAYS);
+        valueOperations.set(userSignatureKey(userId), signature, 10, TimeUnit.DAYS);
     }
 
     @Override
     public String getSignature(String userId) {
-        return valueOperations.get(getKeyName(userId));
-    }
-
-    private String getKeyName(String userId) {
-        return "bt:user:" + userId + ":sk";
+        return valueOperations.get(userSignatureKey(userId));
     }
 }

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+/**
+ * @author Jiang Yinzuo
+ */
 public interface UserService {
     @Async
     Future<List<User>> getUsersAsync(Set<Long> userIds);

@@ -1,5 +1,6 @@
 package pers.jiangyinzuo.carbon.dao.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 /**
  * @author Jiang Yinzuo
  */
+@Mapper
 public interface UserMapper {
 
     /**

@@ -5,12 +5,21 @@ package pers.jiangyinzuo.carbon.dao.cache;
  */
 public class KeyBuilder {
     public static final int FRIENDS_EXPIRE_TIME = 259200;
-    public static final String USER_TOTAL = "bt:user:total";
+    private static final String BWTON_USER = "bt:user:";
 
     private KeyBuilder() {}
 
     public static String userFri(Long userId) {
-        return "bt:user:" + userId + ":fri";
+        return BWTON_USER + userId + ":fri";
+    }
+
+    public static byte[][] multiUserFriBytes(Long ...userIds) {
+        byte[][] result = new byte[userIds.length][];
+        int i = 0;
+        for (Long id : userIds) {
+            result[i++] = userFriBytes(id);
+        }
+        return result;
     }
 
     public static byte[] userFriBytes(Long userId) {
@@ -18,7 +27,7 @@ public class KeyBuilder {
     }
 
     public static String userInfo(Long userId) {
-        return "bt:user:" + userId + ":info";
+        return BWTON_USER + userId + ":info";
     }
 
     public static byte[] userInfoBytes(Long userId) {
@@ -26,10 +35,14 @@ public class KeyBuilder {
     }
 
     public static byte[] userCreditTodayBytes(Long userId) {
-        return ("bt:user:" + userId + ":credit:today").getBytes();
+        return (BWTON_USER + userId + ":credit:today").getBytes();
     }
 
     public static byte[] userCreditHistoryTotalBytes(Long userId) {
-        return ("bt:user:" + userId + ":credit:history:total").getBytes();
+        return (BWTON_USER + userId + ":credit:history:total").getBytes();
+    }
+
+    public static String userSignatureKey(String userId) {
+        return BWTON_USER + userId + ":sk";
     }
 }

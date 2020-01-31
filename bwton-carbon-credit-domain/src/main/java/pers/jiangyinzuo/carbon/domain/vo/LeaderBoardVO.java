@@ -4,8 +4,8 @@ import lombok.Data;
 import pers.jiangyinzuo.carbon.domain.dto.LeaderBoardUserDTO;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Jiang Yinzuo
@@ -13,10 +13,10 @@ import java.util.List;
 @Data
 public class LeaderBoardVO {
     private LeaderBoardUserDTO user;
-    private List<LeaderBoardUserDTO> leaderboard;
+    private Set<LeaderBoardUserDTO> leaderboard;
 
     public LeaderBoardVO() {
-        this.leaderboard = new ArrayList<>();
+        this.leaderboard = new TreeSet<>();
     }
 
     public void addUser(User user, Long credit) {

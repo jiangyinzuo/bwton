@@ -1,9 +1,7 @@
 package pers.jiangyinzuo.carbon.dao.mapper;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DuplicateKeyException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
@@ -13,9 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@MybatisTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UserMapperTest {
+public class UserMapperTest extends BaseMybatisTest {
 
     @Autowired
     private UserMapper userMapper;
@@ -34,7 +30,7 @@ public class UserMapperTest {
 
     @Test
     public void testGetUsers() {
-        List<Object> result = userMapper.getUsers(List.of(1L, 65L));
-        System.out.println(result);
+        List<Object> result = userMapper.getUsers(List.of(1L, 3L));
+        assertEquals(2, result.size());
     }
 }

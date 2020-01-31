@@ -2,6 +2,7 @@ package pers.jiangyinzuo.carbon.common.http;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -38,6 +39,12 @@ public class HttpExceptionHandler {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleJsonParseException(Exception e) {
         return new ResponseEntity<>(createBody("JSON解析错误"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({DuplicateKeyException.class})
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handleDuplicateKeyException(DuplicateKeyException e) {
+        return new ResponseEntity<>(createBody("添加失败"), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

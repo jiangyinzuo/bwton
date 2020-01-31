@@ -1,4 +1,4 @@
-package pers.jiangyinzuo.carbon;
+package pers.jiangyinzuo.carbon.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -30,10 +30,13 @@ public class FriendController {
             @Validated @RequestBody FriendshipDTO friendshipDTO
     ) {
         Long userId = HttpHeaderUtil.getUserId(authToken);
-        if (friendshipDTO.getUserId().equals(userId) && friendService.addFriend(friendshipDTO)) {
-            return new HttpResponseBody<>(0, "ok", null);
-        } else {
-            return new HttpResponseBody<>(-1, "添加失败", null);
+        if (!friendshipDTO.getUserId().equals(userId)) {
+            return new HttpResponseBody<>(-1, "权限不够", null);
         }
+        if (!friendshipDTO.isValid()) {
+            return new HttpResponseBody<>(-1, "不能加自己为好友", null);
+        }
+        friendService.addFriend(friendshipDTO);
+        return new HttpResponseBody<>(0, "ok", null);
     }
 }

@@ -7,6 +7,7 @@ import pers.jiangyinzuo.carbon.validation.annotation.ID;
  * @author Jiang Yinzuo
  */
 @Data
+
 public class FriendshipDTO {
 
     @ID

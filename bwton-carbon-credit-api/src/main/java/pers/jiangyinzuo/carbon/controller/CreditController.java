@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pers.jiangyinzuo.carbon.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.common.http.HttpResponseBody;
-import pers.jiangyinzuo.carbon.service.LeaderBoardService;
+import pers.jiangyinzuo.carbon.service.LeaderboardService;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Jiang Yinzuo
@@ -16,16 +18,16 @@ import pers.jiangyinzuo.carbon.service.LeaderBoardService;
 @RestController
 public class CreditController {
 
-    private LeaderBoardService leaderBoardService;
+    private LeaderboardService leaderBoardService;
 
     @Autowired
-    public void setLeaderBoardService(LeaderBoardService leaderBoardService) {
+    public void setLeaderBoardService(LeaderboardService leaderBoardService) {
         this.leaderBoardService = leaderBoardService;
     }
 
     @GetMapping("/leaderboard/total/")
-    public HttpResponseBody<LeaderBoardVO> getLeaderBoard(@Validated @ID @RequestParam Long userId) {
-        // TODO: implement leaderBoardService
-        return new HttpResponseBody<>(0, "ok", null);
+    public HttpResponseBody<LeaderBoardVO> getLeaderBoard(@Validated @ID @RequestParam Long userId) throws ExecutionException, InterruptedException {
+        LeaderBoardVO vo = leaderBoardService.getTotalLeaderBoard(userId);
+        return new HttpResponseBody<>(0, "ok", vo);
     }
 }

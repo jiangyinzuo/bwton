@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * @author Jiang Yinzuo
  */
-public interface LeaderBoardService {
+public interface LeaderboardService {
 
     /**
      * 获取碳积分排行榜上的好友积分、好友姓名、好友徽章数

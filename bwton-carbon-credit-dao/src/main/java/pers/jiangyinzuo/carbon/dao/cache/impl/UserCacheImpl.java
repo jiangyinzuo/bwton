@@ -28,7 +28,6 @@ public class UserCacheImpl extends AbstractCache implements UserCache {
             }
             return null;
         });
-        System.out.println("设置完成！");
     }
 
     @Override

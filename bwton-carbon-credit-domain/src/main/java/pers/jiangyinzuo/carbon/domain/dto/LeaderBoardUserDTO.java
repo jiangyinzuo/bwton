@@ -7,7 +7,7 @@ import pers.jiangyinzuo.carbon.domain.entity.User;
  * @author Jiang Yinzuo
  */
 @Data
-public class LeaderBoardUserDTO {
+public class LeaderBoardUserDTO implements Comparable<LeaderBoardUserDTO> {
     private Long userId;
     private String nickname;
     private Long credit;
@@ -23,5 +23,10 @@ public class LeaderBoardUserDTO {
             badgeCount += (badge & 1) == 1 ? 1 : 0;
             badge >>= 1;
         }
+    }
+
+    @Override
+    public int compareTo(LeaderBoardUserDTO o) {
+        return o.credit.compareTo(credit);
     }
 }

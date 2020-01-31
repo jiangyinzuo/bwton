@@ -22,7 +22,7 @@ public interface TokenService {
     /**
      * 生成base64 token
      * @param userId 用户ID
-     * @return
+     * @return base64 token
      */
     String genBase64Token(String userId);
 }

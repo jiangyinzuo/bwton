@@ -16,8 +16,13 @@ public class User {
     String nickname;
     Long badge;
 
+    public User() {
+        // used for deserialize from Object value
+    }
+
     public Map<byte[], byte[]> getHash() {
         Map<byte[], byte[]> hash = new HashMap<>(2);
+        hash.put("userId".getBytes(), userId.toString().getBytes());
         hash.put("nickname".getBytes(), nickname.getBytes());
         hash.put("badge".getBytes(), badge.toString().getBytes());
         return hash;

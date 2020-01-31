@@ -64,5 +64,4 @@ public class AccountController {
         data.put("token", newBase64Token);
         return new HttpResponseBody<>(0, "ok", data);
     }
-
 }

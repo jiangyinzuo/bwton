@@ -12,11 +12,11 @@
     </insert>
     <select id="getUsers" resultType="pers.jiangyinzuo.carbon.domain.entity.User" parameterType="list">
         SELECT
-        user_id, nickname, badge
+            user_id, nickname, badge
         FROM
-        bwton_user
+            bwton_user
         WHERE
-        user_id IN
+            user_id IN
         <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item}
         </foreach>

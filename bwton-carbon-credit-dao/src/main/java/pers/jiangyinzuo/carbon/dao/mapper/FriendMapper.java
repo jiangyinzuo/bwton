@@ -1,5 +1,6 @@
 package pers.jiangyinzuo.carbon.dao.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Set;
 /**
  * @author Jiang Yinzuo
  */
+@Mapper
 public interface FriendMapper {
 
     /**
