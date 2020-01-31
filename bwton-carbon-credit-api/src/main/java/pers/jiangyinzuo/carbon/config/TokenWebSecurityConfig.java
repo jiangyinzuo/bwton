@@ -128,7 +128,6 @@ class TokenAuthenticationFilter extends OncePerRequestFilter {
         } else {
             SecurityContextHolder.getContext().setAuthentication(new AuthenticationToken(false));
         }
-
         filterChain.doFilter(request, response);
     }
 }

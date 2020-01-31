@@ -18,14 +18,14 @@ public class UserMapperTest extends BaseMybatisTest {
 
     @Test
     public void testLogin() {
-        UserLoginDTO userLoginDTO = userMapper.getUserAccountByTelephone("13012345678");
-        assertEquals("13012345678", userLoginDTO.getTelephone());
+        UserLoginDTO userLoginDTO = userMapper.getUserAccountByTelephone("13232323222");
+        assertEquals("13232323222", userLoginDTO.getTelephone());
         assertEquals(64, userLoginDTO.getCipher().length());
     }
 
     @Test
     public void testRegister() {
-        assertThrows(DuplicateKeyException.class, () -> userMapper.saveUserAccount("李四", "123456", SaltGenerator.getSalt32(), "13012345678"));
+        assertThrows(DuplicateKeyException.class, () -> userMapper.saveUserAccount("李四", "123456", SaltGenerator.getSalt32(), "13232323222"));
     }
 
     @Test

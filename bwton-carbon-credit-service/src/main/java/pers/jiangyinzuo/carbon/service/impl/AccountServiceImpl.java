@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import pers.jiangyinzuo.carbon.common.http.CustomHttpException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.common.security.Sha256Util;
 import pers.jiangyinzuo.carbon.dao.mapper.UserMapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
-import pers.jiangyinzuo.carbon.common.http.CustomHttpException;
 import pers.jiangyinzuo.carbon.service.AccountService;
 
 

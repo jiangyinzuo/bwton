@@ -49,6 +49,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         Future<List<User>> usersFuture = userService.getUsersAsync(userIds);
 
         // 从缓存中获取用户碳积分
+
         List<Object> cacheCreditsResult = creditCache.getTotalCredits(userIds);
 
         // 碳积分缓存失效的用户ID
