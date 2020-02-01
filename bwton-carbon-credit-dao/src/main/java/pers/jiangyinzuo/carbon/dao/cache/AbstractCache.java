@@ -1,7 +1,7 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
+import io.lettuce.core.api.StatefulRedisConnection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public abstract class AbstractCache {
-    protected RedisTemplate<String, Object> redisTemplate;
+
+    protected StatefulRedisConnection<String, String> redisConnection;
 
     @Autowired
-    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    public void setRedisConnection(StatefulRedisConnection<String, String> redisConnection) {
+        this.redisConnection = redisConnection;
     }
 }

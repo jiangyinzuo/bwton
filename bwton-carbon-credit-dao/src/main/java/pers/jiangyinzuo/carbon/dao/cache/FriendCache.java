@@ -18,7 +18,7 @@ public interface FriendCache {
      * @param userId 用户ID
      * @return 好友ID列表
      */
-    Set<Object> getFriendsId(Long userId);
+    Set<String> getFriendsId(Long userId);
 
     void setFriendsId(Long userId, Set<Long> friendsId);
 }

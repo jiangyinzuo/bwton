@@ -13,11 +13,11 @@ public class KeyBuilder {
         return BWTON_USER + userId + ":fri";
     }
 
-    public static byte[][] multiUserFriBytes(Long ...userIds) {
-        byte[][] result = new byte[userIds.length][];
+    public static String[] multiUserFri(Long ...userIds) {
+        String[] result = new String[userIds.length];
         int i = 0;
         for (Long id : userIds) {
-            result[i++] = userFriBytes(id);
+            result[i++] = userFri(id);
         }
         return result;
     }
@@ -34,12 +34,12 @@ public class KeyBuilder {
         return userInfo(userId).getBytes();
     }
 
-    public static byte[] userCreditTodayBytes(Long userId) {
-        return (BWTON_USER + userId + ":credit:today").getBytes();
+    public static String userCreditToday(Long userId) {
+        return BWTON_USER + userId + ":credit:today";
     }
 
-    public static byte[] userCreditHistoryTotalBytes(Long userId) {
-        return (BWTON_USER + userId + ":credit:history:total").getBytes();
+    public static String userCreditHistoryTotal(Long userId) {
+        return BWTON_USER + userId + ":credit:history:total";
     }
 
     public static String userSignatureKey(String userId) {

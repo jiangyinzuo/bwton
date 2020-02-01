@@ -2,6 +2,7 @@ package pers.jiangyinzuo.carbon.dao.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
+import pers.jiangyinzuo.carbon.domain.entity.User;
 
 import java.util.List;
 
@@ -29,5 +30,5 @@ public interface UserMapper {
      */
     void saveUserAccount(String nickname, String cipher, byte[] salt, String telephone);
 
-    List<Object> getUsers(List<Long> userIds);
+    List<User> getUsers(List<Long> userIds);
 }

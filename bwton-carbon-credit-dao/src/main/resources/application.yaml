@@ -7,3 +7,6 @@ mybatis:
     map-underscore-to-camel-case: true
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: pers.jiangyinzuo.carbon.dao.mapper
+lettuce:
+  host: 0.0.0.0
+  port: 6379

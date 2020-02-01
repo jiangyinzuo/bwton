@@ -6,6 +6,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +46,12 @@ public class HttpExceptionHandler {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleDuplicateKeyException(DuplicateKeyException e) {
         return new ResponseEntity<>(createBody("添加失败"), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        return new ResponseEntity<>(createBody("请求方法错误"), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

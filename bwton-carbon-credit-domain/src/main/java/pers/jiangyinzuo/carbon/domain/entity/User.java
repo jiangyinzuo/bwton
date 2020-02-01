@@ -20,11 +20,11 @@ public class User {
         // used for deserialize from Object value
     }
 
-    public Map<byte[], byte[]> getHash() {
-        Map<byte[], byte[]> hash = new HashMap<>(2);
-        hash.put("userId".getBytes(), userId.toString().getBytes());
-        hash.put("nickname".getBytes(), nickname.getBytes());
-        hash.put("badge".getBytes(), badge.toString().getBytes());
+    public Map<String, String> getHash() {
+        Map<String, String> hash = new HashMap<>(2);
+        hash.put("userId", userId.toString());
+        hash.put("nickname", nickname);
+        hash.put("badge", badge.toString());
         return hash;
     }
 }

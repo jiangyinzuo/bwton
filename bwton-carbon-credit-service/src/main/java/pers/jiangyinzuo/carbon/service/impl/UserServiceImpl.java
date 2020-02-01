@@ -33,11 +33,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @SuppressWarnings("unchecked")
     public Future<List<User>> getUsersAsync(Set<Long> userIds) {
-        List<Object> users = userCache.getUsers(userIds);
+        List<Map<String, String>> users = userCache.getUsers(userIds);
         int i = 0;
         List<Long> expiredIds = new ArrayList<>();
         for (Long id : userIds) {
-            if (((Map<String, Object>)users.get(i++)).isEmpty()) {
+            if ((users.get(i++)).isEmpty()) {
                 expiredIds.add(id);
             }
         }
@@ -50,11 +50,11 @@ public class UserServiceImpl implements UserService {
                 result.add(objectMapper.convertValue(user, User.class));
             }
         } else {
-            List<Object> usersFromDb = userMapper.getUsers(expiredIds);
+            List<User> usersFromDb = userMapper.getUsers(expiredIds);
             userCache.setUsersAsync(usersFromDb);
             i = 0;
-            for (Object user : users) {
-                if (((Map<String, Object>)user).isEmpty()) {
+            for (Map<String, String> user : users) {
+                if (user.isEmpty()) {
                     result.add((User) usersFromDb.get(i++));
                 } else {
                     result.add(objectMapper.convertValue(user, User.class));

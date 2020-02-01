@@ -15,13 +15,3 @@ spring:
       pool-name: DataSourceHikarliCP
       max-lifetime: 1800000
       connection-test-query: SELECT 1
-  redis:
-    database: 0
-    host: 0.0.0.0
-    port: 6379
-    lettuce:
-      pool:
-        max-active: 8
-        max-wait: -1
-        max-idle: 8
-        min-idle: 0

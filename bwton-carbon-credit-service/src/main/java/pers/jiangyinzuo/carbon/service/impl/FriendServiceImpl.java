@@ -35,12 +35,12 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public Set<Long> getFriendIds(Long userId) {
-        Set<Object> friendsSet = friendCache.getFriendsId(userId);
+        Set<String> friendsSet = friendCache.getFriendsId(userId);
         Set<Long> result = new HashSet<>();
         // 缓存命中，直接返回
         if (friendsSet != null) {
-            for (Object friendId : friendsSet) {
-                result.add(((Number) friendId).longValue());
+            for (String friendId : friendsSet) {
+                result.add(Long.parseLong(friendId));
             }
         } else { // 缓存失效，查数据库，更新缓存
             result = friendMapper.getFriendsId(userId);

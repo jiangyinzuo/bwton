@@ -1,8 +1,10 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
 import org.springframework.scheduling.annotation.Async;
+import pers.jiangyinzuo.carbon.domain.entity.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -14,7 +16,7 @@ public interface UserCache {
      * @param users 用户列表
      */
     @Async
-    void setUsersAsync(List<Object> users);
+    void setUsersAsync(List<User> users);
 
-    List<Object> getUsers(Set<Long> userIds);
+    List<Map<String, String>> getUsers(Set<Long> userIds);
 }

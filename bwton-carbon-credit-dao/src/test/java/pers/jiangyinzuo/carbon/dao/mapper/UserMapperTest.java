@@ -1,11 +1,15 @@
 package pers.jiangyinzuo.carbon.dao.mapper;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
+import pers.jiangyinzuo.carbon.domain.entity.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +34,10 @@ public class UserMapperTest extends BaseMybatisTest {
 
     @Test
     public void testGetUsers() {
-        List<Object> result = userMapper.getUsers(List.of(1L, 3L));
-        assertEquals(2, result.size());
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 5; ++i) {
+            userMapper.getUsers(List.of(1L));
+        }
+        System.out.println("total" + (System.currentTimeMillis() - startTime));
     }
 }
