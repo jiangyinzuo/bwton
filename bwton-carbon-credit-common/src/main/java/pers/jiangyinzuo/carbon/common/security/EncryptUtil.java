@@ -11,12 +11,12 @@ import java.util.UUID;
  * @author Jiang Yinzuo
  */
 @Log4j2
-public class Sha256Util {
+public class EncryptUtil {
 
-    private Sha256Util() {}
+    private EncryptUtil() {}
     
     public static String genCredential() {
-        byte[] credentialBytes = DigestUtils.getSha256Digest().digest(UUID.randomUUID().toString().getBytes());
+        byte[] credentialBytes = DigestUtils.getMd5Digest().digest(UUID.randomUUID().toString().getBytes());
         return Hex.encodeHexString(credentialBytes);
     }
 
@@ -25,7 +25,7 @@ public class Sha256Util {
     }
 
     public static String encryptPassword(String password, byte[] salt) {
-        byte[] cipherBytes = DigestUtils.getSha256Digest().digest(ArrayUtils.addAll(password.getBytes(), salt));
+        byte[] cipherBytes = DigestUtils.getMd5Digest().digest(ArrayUtils.addAll(password.getBytes(), salt));
         return Hex.encodeHexString(cipherBytes);
     }
 
@@ -33,7 +33,7 @@ public class Sha256Util {
         if (credential == null || credential.isBlank()) {
             return "";
         }
-        byte[] cipherBytes = DigestUtils.getSha256Digest().digest(credential.getBytes());
+        byte[] cipherBytes = DigestUtils.getMd5Digest().digest(credential.getBytes());
         return Hex.encodeHexString(cipherBytes);
     }
 }

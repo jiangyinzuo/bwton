@@ -1,15 +1,11 @@
 package pers.jiangyinzuo.carbon.dao.mapper;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
-import pers.jiangyinzuo.carbon.domain.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

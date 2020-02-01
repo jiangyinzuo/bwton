@@ -4,7 +4,9 @@ import org.springframework.scheduling.annotation.Async;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
@@ -12,5 +14,5 @@ import java.util.concurrent.Future;
  */
 public interface UserService {
     @Async
-    Future<List<User>> getUsersAsync(Set<Long> userIds);
+    Future<List<Map<String, String>>> getUsersAsync(Set<Long> userIds) throws ExecutionException, InterruptedException;
 }

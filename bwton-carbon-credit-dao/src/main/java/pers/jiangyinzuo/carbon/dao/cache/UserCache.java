@@ -1,11 +1,13 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
+import io.lettuce.core.RedisFuture;
 import org.springframework.scheduling.annotation.Async;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 /**
  * @author Jiang Yinzuo

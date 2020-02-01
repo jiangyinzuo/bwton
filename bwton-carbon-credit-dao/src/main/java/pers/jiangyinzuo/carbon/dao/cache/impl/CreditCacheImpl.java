@@ -17,9 +17,9 @@ import java.util.List;
 public class CreditCacheImpl extends AbstractCache implements CreditCache {
 
     @Override
-    public List<Object> getTotalCredits(Collection<Long> usersId) {
+    public List<String> getTotalCredits(Collection<Long> usersId) {
         RedisCommands<String, String> cmd = redisConnection.sync();
-        List<Object> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         for (Long id : usersId) {
             result.add(cmd.get(KeyBuilder.userCreditToday(id)));
             result.add(cmd.get(KeyBuilder.userCreditHistoryTotal(id)));

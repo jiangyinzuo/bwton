@@ -57,11 +57,14 @@ public class AccountController {
     }
 
     @PutMapping("/token")
-    public HttpResponseBody<Map<String, String>> refreshToken(HttpServletRequest request) {
-        String base64Token = HttpHeaderUtil.getAuthBase64Token(request);
+    public HttpResponseBody<Map<String, Object>> refreshToken(
+            @RequestHeader("Authorization") String authToken) {
+        String base64Token = HttpHeaderUtil.getBase64Token(authToken);
         String newBase64Token = tokenService.refreshBase64Token(base64Token);
-        Map<String, String> data = new HashMap<>(1);
+        Long userId = HttpHeaderUtil.getUserId(authToken);
+        Map<String, Object> data = new HashMap<>(1);
         data.put("token", newBase64Token);
+        data.put("userId", userId);
         return new HttpResponseBody<>(0, "ok", data);
     }
 }

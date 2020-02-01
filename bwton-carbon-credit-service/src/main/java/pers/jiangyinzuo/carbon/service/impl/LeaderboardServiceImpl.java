@@ -13,6 +13,7 @@ import pers.jiangyinzuo.carbon.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -46,11 +47,10 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         userIds.add(userId);
 
         // 异步获取用户信息
-        Future<List<User>> usersFuture = userService.getUsersAsync(userIds);
+        Future<List<Map<String, String>>> usersFuture = userService.getUsersAsync(userIds);
 
         // 从缓存中获取用户碳积分
-
-        List<Object> cacheCreditsResult = creditCache.getTotalCredits(userIds);
+        List<String> cacheCreditsResult = creditCache.getTotalCredits(userIds);
 
         // 碳积分缓存失效的用户ID
         List<Long> expiredUserIds = new ArrayList<>();
@@ -64,24 +64,24 @@ public class LeaderboardServiceImpl implements LeaderboardService {
         }
 
         // 用户信息
-        List<User> users;
+        List<Map<String, String>> users;
 
         // 返回值对象
         LeaderBoardVO vo = new LeaderBoardVO();
 
         // 获取users
         while (!usersFuture.isDone()) {
-            Thread.sleep(10);
+            Thread.sleep(5);
         }
         users = usersFuture.get();
         
         // 没有过期的用户碳积分缓存
         if (expiredUserIds.isEmpty()) {
             i = 0;
-            for (User user : users) {
-                vo.addUser(user, (long)cacheCreditsResult.get(i) + (long)cacheCreditsResult.get(i+1));
-                if (userId.equals(user.getUserId())) {
-                    vo.setUser(new LeaderBoardUserDTO(user, (long)cacheCreditsResult.get(i) + (long)cacheCreditsResult.get(i+1)));
+            for (Map<String, String> user : users) {
+                vo.addUser(user, Long.parseLong(cacheCreditsResult.get(i)) + Long.parseLong(cacheCreditsResult.get(i+1)));
+                if (userId.equals(Long.parseLong(user.get("userId")))) {
+                    vo.setUser(new LeaderBoardUserDTO(user, Long.parseLong(cacheCreditsResult.get(i)) + Long.parseLong(cacheCreditsResult.get(i+1))));
                 }
                 i += 2;
             }
@@ -91,18 +91,18 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             i = 0;
             int j = 0;
             long creditToday;
-            for (User user : users) {
-                creditToday = cacheCreditsResult.get(i) == null ? 0L : (Long)cacheCreditsResult.get(i);
+            for (Map<String, String> user : users) {
+                creditToday = cacheCreditsResult.get(i) == null ? 0L : Long.parseLong(cacheCreditsResult.get(i));
                 // 碳积分缓存失效
                 if (cacheCreditsResult.get(i+1) == null) {
                     vo.addUser(user, creditToday + dbCreditsResult.get(j));
-                    if (userId.equals(user.getUserId())) {
+                    if (userId.equals(Long.parseLong(user.get("userId")))) {
                         vo.setUser(new LeaderBoardUserDTO(user, creditToday + dbCreditsResult.get(j)));
                     }
                 } else { // 碳积分缓存未失效
-                    vo.addUser(user, creditToday + (long)cacheCreditsResult.get(i));
-                    if (userId.equals(user.getUserId())) {
-                        vo.setUser(new LeaderBoardUserDTO(user, creditToday + (long)cacheCreditsResult.get(i)));
+                    vo.addUser(user, creditToday + Long.parseLong(cacheCreditsResult.get(i)));
+                    if (userId.equals(Long.parseLong(user.get("userId")))) {
+                        vo.setUser(new LeaderBoardUserDTO(user, creditToday + Long.parseLong(cacheCreditsResult.get(i))));
                     }
                 }
                 i += 2;

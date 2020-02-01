@@ -19,9 +19,11 @@ public class UserCacheTest {
 
     @Test
     public void testSetUsersAsync() {
-        System.out.println(Thread.activeCount());
-        userCache.setUsersAsync(List.of(new User(3L, "Bob", 3L)));
-        System.out.println(Thread.activeCount());
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 100; ++i) {
+            userCache.setUsersAsync(List.of(new User((long)i, "Bob", (long)i)));
+        }
+        System.out.println(System.currentTimeMillis() - startTime);
     }
 
     @Test
@@ -30,7 +32,7 @@ public class UserCacheTest {
 
         List<Map<String, String>> result = null;
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 50; ++i) {
             result = userCache.getUsers(set);
         }
         System.out.println(System.currentTimeMillis() - startTime);

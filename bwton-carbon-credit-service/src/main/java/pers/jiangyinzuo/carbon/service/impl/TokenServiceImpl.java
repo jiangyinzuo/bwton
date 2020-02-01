@@ -2,7 +2,7 @@ package pers.jiangyinzuo.carbon.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.jiangyinzuo.carbon.common.security.Sha256Util;
+import pers.jiangyinzuo.carbon.common.security.EncryptUtil;
 import pers.jiangyinzuo.carbon.dao.cache.TokenCache;
 import pers.jiangyinzuo.carbon.service.TokenService;
 
@@ -30,7 +30,7 @@ public class TokenServiceImpl implements TokenService {
             return false;
         }
         String signature = tokenCache.getSignature(pair[0]);
-        return signature != null && signature.equals(Sha256Util.genSignature(pair[1]));
+        return signature != null && signature.equals(EncryptUtil.genSignature(pair[1]));
     }
 
     @Override
@@ -42,8 +42,8 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String genBase64Token(String userId) {
-        String credential = Sha256Util.genCredential();
-        String signature = Sha256Util.genSignature(credential);
+        String credential = EncryptUtil.genCredential();
+        String signature = EncryptUtil.genSignature(credential);
         tokenCache.setSignature(userId, signature);
         return Base64.getUrlEncoder().encodeToString((userId + ":" + credential).getBytes());
     }

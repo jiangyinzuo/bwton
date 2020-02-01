@@ -19,7 +19,7 @@ public class SecurityToolsTest {
 
     @Test
     public void testSha256Encrypt() {
-        assertEquals(64, Sha256Util.encryptPassword("123456").length());
-        assertNotEquals(Sha256Util.encryptPassword("123"), Sha256Util.encryptPassword("123"));
+        assertEquals(64, EncryptUtil.encryptPassword("123456").length());
+        assertNotEquals(EncryptUtil.encryptPassword("123"), EncryptUtil.encryptPassword("123"));
     }
 }

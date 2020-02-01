@@ -13,5 +13,5 @@ public interface CreditCache {
      * @param usersId 用户ID集合
      * @return 用户碳积分
      */
-    List<Object> getTotalCredits(Collection<Long> usersId);
+    List<String> getTotalCredits(Collection<Long> usersId);
 }

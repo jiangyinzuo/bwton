@@ -1,5 +1,6 @@
 package pers.jiangyinzuo.carbon.dao.cache.impl;
 
+import io.lettuce.core.RedisFuture;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.AbstractCache;
 import pers.jiangyinzuo.carbon.dao.cache.KeyBuilder;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userInfo;
 
@@ -21,7 +23,7 @@ public class UserCacheImpl extends AbstractCache implements UserCache {
     @Override
     public void setUsersAsync(List<User> users) {
         for (User user : users) {
-            redisConnection.sync().hmset(
+            redisConnection.async().hmset(
                     KeyBuilder.userInfo(user.getUserId()),
                     user.getHash()
             );

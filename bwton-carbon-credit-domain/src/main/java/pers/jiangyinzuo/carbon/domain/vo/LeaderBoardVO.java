@@ -4,6 +4,7 @@ import lombok.Data;
 import pers.jiangyinzuo.carbon.domain.dto.LeaderBoardUserDTO;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -19,7 +20,7 @@ public class LeaderBoardVO {
         this.leaderboard = new TreeSet<>();
     }
 
-    public void addUser(User user, Long credit) {
-        leaderboard.add(new LeaderBoardUserDTO(user, credit));
+    public void addUser(Map<String, String> rawUser, Long credit) {
+        leaderboard.add(new LeaderBoardUserDTO(rawUser, credit));
     }
 }

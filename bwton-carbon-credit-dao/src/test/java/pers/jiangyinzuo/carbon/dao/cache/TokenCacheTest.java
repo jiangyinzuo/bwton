@@ -3,7 +3,7 @@ package pers.jiangyinzuo.carbon.dao.cache;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pers.jiangyinzuo.carbon.common.security.Sha256Util;
+import pers.jiangyinzuo.carbon.common.security.EncryptUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,7 +15,7 @@ public class TokenCacheTest {
 
     @Test
     public void testSetSignature() {
-        tokenCache.setSignature("1", Sha256Util.genSignature(Sha256Util.genCredential()));
+        tokenCache.setSignature("1", EncryptUtil.genSignature(EncryptUtil.genCredential()));
         String signature = tokenCache.getSignature("1");
         assertEquals(64, signature.length());
     }

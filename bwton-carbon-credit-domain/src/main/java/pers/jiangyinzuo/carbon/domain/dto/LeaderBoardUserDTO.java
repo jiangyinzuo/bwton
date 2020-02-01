@@ -3,6 +3,8 @@ package pers.jiangyinzuo.carbon.domain.dto;
 import lombok.Data;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 
+import java.util.Map;
+
 /**
  * @author Jiang Yinzuo
  */
@@ -13,12 +15,12 @@ public class LeaderBoardUserDTO implements Comparable<LeaderBoardUserDTO> {
     private Long credit;
     private Integer badgeCount;
 
-    public LeaderBoardUserDTO(User user, Long credit) {
-        this.userId = user.getUserId();
-        this.nickname = user.getNickname();
+    public LeaderBoardUserDTO(Map<String, String> user, Long credit) {
+        this.userId = Long.parseLong(user.get("userId"));
+        this.nickname = user.get("nickname");
         this.credit = credit;
         this.badgeCount = 0;
-        long badge = user.getBadge();
+        long badge = Long.parseLong(user.get("badge"));
         while (badge != 0L) {
             badgeCount += (badge & 1) == 1 ? 1 : 0;
             badge >>= 1;

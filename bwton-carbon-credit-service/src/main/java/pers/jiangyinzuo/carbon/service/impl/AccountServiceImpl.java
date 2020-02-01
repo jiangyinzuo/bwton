@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.common.http.CustomHttpException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
-import pers.jiangyinzuo.carbon.common.security.Sha256Util;
+import pers.jiangyinzuo.carbon.common.security.EncryptUtil;
 import pers.jiangyinzuo.carbon.dao.mapper.UserMapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
@@ -32,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
         if (dto == null) {
             return ACCOUNT_NOT_EXIST;
         }
-        if (Sha256Util.encryptPassword(userLoginDTO.getPassword(), dto.getSalt()).equals(dto.getCipher())) {
+        if (EncryptUtil.encryptPassword(userLoginDTO.getPassword(), dto.getSalt()).equals(dto.getCipher())) {
             return dto.getUserId();
         } else {
             return PASSWORD_ERROR;
@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
         byte[] salt = SaltGenerator.getSalt32();
-        String cipher = Sha256Util.encryptPassword(userRegisterDTO.getPassword(), salt);
+        String cipher = EncryptUtil.encryptPassword(userRegisterDTO.getPassword(), salt);
         try {
             userMapper.saveUserAccount(
                     userRegisterDTO.getNickname(),
