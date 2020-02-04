@@ -3,20 +3,13 @@ package pers.jiangyinzuo.carbon.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
-import pers.jiangyinzuo.carbon.dao.mapper.CreditMapper;
-import pers.jiangyinzuo.carbon.domain.dto.LeaderBoardUserDTO;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.service.FriendService;
 import pers.jiangyinzuo.carbon.service.LeaderboardService;
-import pers.jiangyinzuo.carbon.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * @author Jiang Yinzuo
@@ -26,89 +19,25 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 
     private FriendService friendService;
     private CreditCache creditCache;
-    private UserService userService;
-    private CreditMapper creditMapper;
 
     @Autowired
-    public LeaderboardServiceImpl(FriendService friendService, CreditCache creditCache, UserService userService, CreditMapper creditMapper) {
+    public LeaderboardServiceImpl(FriendService friendService, CreditCache creditCache) {
         this.friendService = friendService;
         this.creditCache = creditCache;
-        this.userService = userService;
-        this.creditMapper = creditMapper;
     }
 
     @Override
-    public LeaderBoardVO getTotalLeaderBoard(Long userId) throws InterruptedException, ExecutionException {
+    public LeaderBoardVO getLeaderBoard(Long userId, Mode mode) {
 
-        // 获取用户好友ID
-        Set<Long> userIds = friendService.getFriendIds(userId);
+        List<User> userList = friendService.getUserAndFriends(userId);
 
-        // 加用户自己
-        userIds.add(userId);
-
-        // 异步获取用户信息
-        Future<List<Map<String, String>>> usersFuture = userService.getUsersAsync(userIds);
-
-        // 从缓存中获取用户碳积分
-        List<String> cacheCreditsResult = creditCache.getTotalCredits(userIds);
-
-        // 碳积分缓存失效的用户ID
-        List<Long> expiredUserIds = new ArrayList<>();
-
-        int i = 1;
-        for (Long id : userIds) {
-            if (cacheCreditsResult.get(i) == null) {
-                expiredUserIds.add(id);
-            }
-            i += 2;
+        List<Long> userIdList = new ArrayList<>();
+        for (User user : userList) {
+            userIdList.add(user.getUserId());
         }
 
-        // 用户信息
-        List<Map<String, String>> users;
+        List<Long> creditList = creditCache.getCredits(userIdList, "total");
 
-        // 返回值对象
-        LeaderBoardVO vo = new LeaderBoardVO();
-
-        // 获取users
-        while (!usersFuture.isDone()) {
-            Thread.sleep(5);
-        }
-        users = usersFuture.get();
-        
-        // 没有过期的用户碳积分缓存
-        if (expiredUserIds.isEmpty()) {
-            i = 0;
-            for (Map<String, String> user : users) {
-                vo.addUser(user, Long.parseLong(cacheCreditsResult.get(i)) + Long.parseLong(cacheCreditsResult.get(i+1)));
-                if (userId.equals(Long.parseLong(user.get("userId")))) {
-                    vo.setUser(new LeaderBoardUserDTO(user, Long.parseLong(cacheCreditsResult.get(i)) + Long.parseLong(cacheCreditsResult.get(i+1))));
-                }
-                i += 2;
-            }
-        } else { // 部分用户碳积分缓存过期，向数据库查询碳积分
-            List<Long> dbCreditsResult = creditMapper.getHistoryTotalCredits(expiredUserIds);
-
-            i = 0;
-            int j = 0;
-            long creditToday;
-            for (Map<String, String> user : users) {
-                creditToday = cacheCreditsResult.get(i) == null ? 0L : Long.parseLong(cacheCreditsResult.get(i));
-                // 碳积分缓存失效
-                if (cacheCreditsResult.get(i+1) == null) {
-                    vo.addUser(user, creditToday + dbCreditsResult.get(j));
-                    if (userId.equals(Long.parseLong(user.get("userId")))) {
-                        vo.setUser(new LeaderBoardUserDTO(user, creditToday + dbCreditsResult.get(j)));
-                    }
-                } else { // 碳积分缓存未失效
-                    vo.addUser(user, creditToday + Long.parseLong(cacheCreditsResult.get(i)));
-                    if (userId.equals(Long.parseLong(user.get("userId")))) {
-                        vo.setUser(new LeaderBoardUserDTO(user, creditToday + Long.parseLong(cacheCreditsResult.get(i))));
-                    }
-                }
-                i += 2;
-                j++;
-            }
-        }
-        return vo;
+        return LeaderBoardVO.create(userList, creditList);
     }
 }

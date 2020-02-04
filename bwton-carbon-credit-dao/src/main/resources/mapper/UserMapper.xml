@@ -10,15 +10,7 @@
         INSERT INTO bwton_user(nickname, cipher, salt, telephone)
         VALUES (#{nickname}, #{cipher}, #{salt}, #{telephone})
     </insert>
-    <select id="getUsers" resultType="pers.jiangyinzuo.carbon.domain.entity.User" parameterType="list">
-        SELECT
-            user_id, nickname, badge
-        FROM
-            bwton_user
-        WHERE
-            user_id IN
-        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-            #{item}
-        </foreach>
+    <select id="exists" resultType="Boolean">
+        SELECT EXISTS(SELECT 1 FROM bwton_user WHERE user_id = #{userId})
     </select>
 </mapper>

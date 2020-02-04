@@ -9,9 +9,10 @@ import java.util.List;
 public interface CreditCache {
 
     /**
-     * 根据用户ID向缓存查询多个用户的总碳积分
+     * 查询多个用户的总碳积分
      * @param usersId 用户ID集合
+     * @param span 时间间隔 total, today, week, remain
      * @return 用户碳积分
      */
-    List<String> getTotalCredits(Collection<Long> usersId);
+    List<Long> getCredits(Collection<Long> usersId, String span);
 }

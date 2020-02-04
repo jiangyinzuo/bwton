@@ -5,12 +5,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pers.jiangyinzuo.carbon.validation.annotation.ID;
-import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.common.http.HttpResponseBody;
+import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.service.LeaderboardService;
-
-import java.util.concurrent.ExecutionException;
+import pers.jiangyinzuo.carbon.validation.annotation.ID;
 
 /**
  * @author Jiang Yinzuo
@@ -26,8 +24,8 @@ public class CreditController {
     }
 
     @GetMapping("/leaderboard/total/")
-    public HttpResponseBody<LeaderBoardVO> getLeaderBoard(@Validated @ID @RequestParam Long userId) throws ExecutionException, InterruptedException {
-        LeaderBoardVO vo = leaderBoardService.getTotalLeaderBoard(userId);
+    public HttpResponseBody<LeaderBoardVO> getLeaderBoard(@Validated @ID @RequestParam Long userId) {
+        LeaderBoardVO vo = leaderBoardService.getLeaderBoard(userId, LeaderboardService.Mode.TOTAL);
         return new HttpResponseBody<>(0, "ok", vo);
     }
 }

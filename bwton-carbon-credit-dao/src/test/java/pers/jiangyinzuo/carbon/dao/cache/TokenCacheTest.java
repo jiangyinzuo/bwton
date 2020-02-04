@@ -15,8 +15,13 @@ public class TokenCacheTest {
 
     @Test
     public void testSetSignature() {
-        tokenCache.setSignature("1", EncryptUtil.genSignature(EncryptUtil.genCredential()));
-        String signature = tokenCache.getSignature("1");
-        assertEquals(64, signature.length());
+        long start = System.currentTimeMillis();
+        String signature;
+        for (int i = 0; i < 1000; ++i) {
+            tokenCache.setSignature("1", EncryptUtil.genSignature(EncryptUtil.genCredential()));
+        }
+        signature = tokenCache.getSignature("1");
+        assertEquals(32, signature.length());
+        System.out.println(System.currentTimeMillis() - start);
     }
 }

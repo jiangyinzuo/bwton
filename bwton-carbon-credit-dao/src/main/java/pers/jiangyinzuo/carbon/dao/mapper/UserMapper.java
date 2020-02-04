@@ -31,4 +31,11 @@ public interface UserMapper {
     void saveUserAccount(String nickname, String cipher, byte[] salt, String telephone);
 
     List<User> getUsers(List<Long> userIds);
+
+    /**
+     * 查询一个用户是否存在
+     * @param userId 用户ID
+     * @return 存在: true; 不存在: false
+     */
+    Boolean exists(Long userId);
 }

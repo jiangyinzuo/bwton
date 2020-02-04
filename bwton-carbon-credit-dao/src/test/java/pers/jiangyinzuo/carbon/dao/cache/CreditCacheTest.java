@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 public class CreditCacheTest {
     private CreditCache creditCache;
@@ -17,7 +19,7 @@ public class CreditCacheTest {
 
     @Test
     public void testGetTotalCredit() {
-        var result = creditCache.getTotalCredits(List.of(1L, 2L));
-        System.out.println(result);
+        var result = creditCache.getCredits(List.of(1L, 2L), "total");
+        assertEquals(2, result.size());
     }
 }

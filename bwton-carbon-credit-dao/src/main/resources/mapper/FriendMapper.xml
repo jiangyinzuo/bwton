@@ -6,12 +6,15 @@
     <insert id="addFriends">
         INSERT INTO bwton_friendship(user1_id, user2_id) VALUES(#{user1Id}, #{user2Id})
     </insert>
-    <select id="getFriendsId" resultType="Long">
-        SELECT user2_id AS user_id FROM bwton_friendship WHERE user1_id = #{userId}
+
+    <select id="getUserAndFriends" resultType="pers.jiangyinzuo.carbon.domain.entity.User">
+        SELECT
+            bwton_user.user_id, bwton_user.nickname, bwton_user.badge
+        FROM
+            bwton_user
+        WHERE
+            user_id = #{userId}
         UNION ALL
-        SELECT user1_id AS user_id FROM bwton_friendship WHERE user2_id = #{userId}
-    </select>
-    <select id="getFriendsByUserId" resultType="pers.jiangyinzuo.carbon.domain.entity.User">
         SELECT
             bwton_user.user_id, bwton_user.nickname, bwton_user.badge
         FROM

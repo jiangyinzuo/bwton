@@ -13,16 +13,6 @@ public class FriendMapperTest extends BaseMybatisTest {
     private FriendMapper friendMapper;
 
     @Test
-    public void testAddFriend() {
-        friendMapper.addFriends(10L, 24L);
-        friendMapper.addFriends(10L, 25L);
-        Set<Long> result = friendMapper.getFriendsId(10L);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(24L));
-        assertTrue(result.contains(25L));
-    }
-
-    @Test
     public void testDuplicateInsert() {
         assertThrows(DuplicateKeyException.class, () -> {
             friendMapper.addFriends(4L, 5L);
@@ -32,6 +22,6 @@ public class FriendMapperTest extends BaseMybatisTest {
 
     @Test
     public void testGetFriends() {
-        assertEquals(4, friendMapper.getFriendsByUserId(1L).size());
+        assertEquals(4, friendMapper.getUserAndFriends(1L).size());
     }
 }

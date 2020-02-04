@@ -38,14 +38,4 @@ public class HttpHeaderUtil {
             return -1L;
         }
     }
-
-    public static String getBase64Token(String rawAuthToken) {
-        if (rawAuthToken != null && rawAuthToken.startsWith(AUTHORIZATION_PREFIX)) {
-            String credential = new String(Base64.getUrlDecoder().decode(rawAuthToken.substring(7)), StandardCharsets.UTF_8);
-            return credential.split(":", 2)[1];
-
-        } else {
-            return null;
-        }
-    }
 }

@@ -6,7 +6,6 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.resource.ClientResources;
 import io.lettuce.core.resource.DefaultClientResources;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +23,7 @@ public class LettuceConfig {
         this.lettuceProperties = lettuceProperties;
     }
 
-    @Bean(destroyMethod = "shutdown")
+    @Bean
     public ClientResources clientResources() {
         return DefaultClientResources.create();
     }
@@ -34,17 +33,16 @@ public class LettuceConfig {
         return RedisURI.create(lettuceProperties.getHost(), lettuceProperties.getPort());
     }
 
-    @Bean(destroyMethod = "shutdown")
-    public RedisClient singleRedisClient(ClientResources clientResources, @Qualifier("singleRedisUri") RedisURI redisUri) {
-        return RedisClient.create(clientResources, redisUri);
+    @Bean(destroyMethod = "shutdownAsync")
+    public RedisClient singleRedisClient(ClientResources clientResources, RedisURI singleRedisUri) {
+        return RedisClient.create(clientResources, singleRedisUri);
     }
 
-    @Bean(destroyMethod = "close")
-    public StatefulRedisConnection<String, String> singleRedisConnection(@Qualifier("singleRedisClient") RedisClient singleRedisClient) {
-        return singleRedisClient.connect();
+    @Bean
+    public StatefulRedisConnection<String, String> statefulRedisConnection(RedisClient redisClient) {
+        return redisClient.connect();
     }
 }
-
 
 @ConfigurationProperties(prefix = "lettuce")
 @Data

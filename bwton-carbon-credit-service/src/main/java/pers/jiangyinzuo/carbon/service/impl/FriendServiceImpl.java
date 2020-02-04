@@ -2,13 +2,13 @@ package pers.jiangyinzuo.carbon.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pers.jiangyinzuo.carbon.dao.cache.FriendCache;
 import pers.jiangyinzuo.carbon.dao.mapper.FriendMapper;
+import pers.jiangyinzuo.carbon.dao.mapper.UserMapper;
 import pers.jiangyinzuo.carbon.domain.dto.FriendshipDTO;
+import pers.jiangyinzuo.carbon.domain.entity.User;
 import pers.jiangyinzuo.carbon.service.FriendService;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Jiang Yinzuo
@@ -17,35 +17,25 @@ import java.util.Set;
 public class FriendServiceImpl implements FriendService {
 
     private FriendMapper friendMapper;
-    private FriendCache friendCache;
+    private UserMapper userMapper;
 
     @Autowired
-    public FriendServiceImpl(FriendMapper friendMapper, FriendCache friendCache) {
+    public FriendServiceImpl(FriendMapper friendMapper, UserMapper userMapper) {
         this.friendMapper = friendMapper;
-        this.friendCache = friendCache;
+        this.userMapper = userMapper;
     }
 
     @Override
     public void addFriend(FriendshipDTO friendshipDTO) {
-        Long minUserId = friendshipDTO.getMinId();
-        Long maxUserId = friendshipDTO.getMaxId();
-        friendMapper.addFriends(minUserId, maxUserId);
-        friendCache.delUserFriKey(minUserId, maxUserId);
+        if (Boolean.TRUE.equals(userMapper.exists(friendshipDTO.getFriendId()))) {
+            Long minUserId = friendshipDTO.getMinId();
+            Long maxUserId = friendshipDTO.getMaxId();
+            friendMapper.addFriends(minUserId, maxUserId);
+        }
     }
 
     @Override
-    public Set<Long> getFriendIds(Long userId) {
-        Set<String> friendsSet = friendCache.getFriendsId(userId);
-        Set<Long> result = new HashSet<>();
-        // 缓存命中，直接返回
-        if (friendsSet != null) {
-            for (String friendId : friendsSet) {
-                result.add(Long.parseLong(friendId));
-            }
-        } else { // 缓存失效，查数据库，更新缓存
-            result = friendMapper.getFriendsId(userId);
-            friendCache.setFriendsId(userId, result);
-        }
-        return result;
+    public List<User> getUserAndFriends(Long userId) {
+        return friendMapper.getUserAndFriends(userId);
     }
 }

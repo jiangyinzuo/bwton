@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Jiang Yinzuo
@@ -20,16 +19,9 @@ public interface FriendMapper {
     void addFriends(Long user1Id, Long user2Id);
 
     /**
-     * 获取好友列表
+     * 获取用户自身与好友基本信息
      * @param userId 用户ID
      * @return 好友列表
      */
-    Set<Long> getFriendsId(Long userId);
-
-    /**
-     * 获取好友基本信息
-     * @param userId 用户ID
-     * @return 好友列表
-     */
-    List<User> getFriendsByUserId(Long userId);
+    List<User> getUserAndFriends(Long userId);
 }

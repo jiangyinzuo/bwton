@@ -55,12 +55,12 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/login/**", "/register/**");
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(tokenAuthenticationProvider);
     }
 
@@ -88,7 +88,7 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
 class TokenAuthenticationProvider implements AuthenticationProvider {
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) {
         if (authentication.isAuthenticated()) {
             return authentication;
         } else {
@@ -135,7 +135,7 @@ class TokenAuthenticationFilter extends OncePerRequestFilter {
 class AuthenticationEntryPointHandler implements AuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         Map<String, Object> data = new HashMap<>(2);
         data.put("errCode", -1);
         data.put("errMsg", authException.getMessage());

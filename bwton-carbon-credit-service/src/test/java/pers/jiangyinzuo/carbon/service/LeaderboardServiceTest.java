@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.concurrent.ExecutionException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -15,8 +13,8 @@ public class LeaderboardServiceTest {
     private LeaderboardService leaderboardService;
 
     @Test
-    public void testGetTotalLeaderboard() throws ExecutionException, InterruptedException {
-        var result = leaderboardService.getTotalLeaderBoard(1L);
+    public void testGetTotalLeaderboard()  {
+        var result = leaderboardService.getLeaderBoard(1L, LeaderboardService.Mode.TOTAL);
         assertEquals(1L, result.getUser().getUserId());
     }
 }
