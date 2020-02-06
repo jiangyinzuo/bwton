@@ -1,7 +1,7 @@
 package pers.jiangyinzuo.carbon.domain.dto;
 
 import lombok.Data;
-import pers.jiangyinzuo.carbon.validation.annotation.ID;
+import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 
 /**
  * @author Jiang Yinzuo

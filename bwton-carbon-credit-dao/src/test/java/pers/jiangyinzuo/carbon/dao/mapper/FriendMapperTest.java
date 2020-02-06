@@ -22,6 +22,6 @@ public class FriendMapperTest extends BaseMybatisTest {
 
     @Test
     public void testGetFriends() {
-        assertEquals(4, friendMapper.getUserAndFriends(1L).size());
+        assertEquals(5, friendMapper.getUserAndFriends(1L).size());
     }
 }

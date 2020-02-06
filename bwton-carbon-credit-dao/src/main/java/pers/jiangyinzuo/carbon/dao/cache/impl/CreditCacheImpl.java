@@ -1,8 +1,8 @@
 package pers.jiangyinzuo.carbon.dao.cache.impl;
 
 import io.lettuce.core.LettuceFutures;
+import io.lettuce.core.Range;
 import io.lettuce.core.RedisFuture;
-import io.lettuce.core.api.async.RedisAsyncCommands;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.BaseCache;
@@ -17,8 +17,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static pers.jiangyinzuo.carbon.common.TimeUtil.getTodayTimestamp;
-import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userCredit;
-import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userCreditRecord;
+import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
 
 /**
  * @author Jiang Yinzuo
@@ -27,13 +26,14 @@ import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userCreditRecord;
 @Log4j2
 public class CreditCacheImpl extends BaseCache implements CreditCache {
 
+    private static final long EXPIRE_SPAN = 24 * 3600 * 1000L;
+
     @Override
     public List<Long> getCredits(Collection<Long> usersId, String span) {
 
-        RedisAsyncCommands<String, String> cmd = conn.async();
         List<Future<String>> futures = new ArrayList<>();
         for (Long id : usersId) {
-            futures.add(cmd.get(userCredit(id, span)));
+            futures.add(cmdAsync.get(userCredit(id, span)));
         }
         LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futures.toArray(new Future[0]));
         List<Long> result = new ArrayList<>(futures.size());
@@ -55,7 +55,7 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     public List<List<Integer>> getCreditCollectedRecord(Long friendId) {
         List<RedisFuture<List<String>>> futures = new ArrayList<>(7);
         for (int i = 1; i <= 7; ++i) {
-            futures.add(conn.async().lrange(userCreditRecord(friendId, i), 0, -1));
+            futures.add(cmdAsync.lrange(userCreditRecord(friendId, i), 0, -1));
         }
         List<List<Integer>> collectedRecords = new ArrayList<>(7);
 
@@ -78,14 +78,31 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
 
     @Override
     public void collectCredits(Long userId, Long collectedUserId, Integer credit) {
-        RedisAsyncCommands<String, String> cmd = conn.async();
-        cmd.incrby(userCredit(userId, "total"), credit);
-        cmd.incrby(userCredit(userId, "today"), credit);
-        cmd.incrby(userCredit(userId, "week"), credit);
+        cmdAsync.incrby(userCredit(userId, "total"), credit);
+        cmdAsync.incrby(userCredit(userId, "today"), credit);
+        cmdAsync.incrby(userCredit(userId, "week"), credit);
 
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
         String userCreditRecord = userCreditRecord(userId, dayOfWeek);
-        cmd.rpush(userCreditRecord, credit.toString()).thenRun(() -> cmd.expireat(userCreditRecord, getTodayTimestamp()));
+        cmdAsync.rpush(userCreditRecord, credit.toString()).thenRun(() -> cmdAsync.expireat(userCreditRecord, getTodayTimestamp()));
+    }
+
+    @Override
+    public void addCreditDrop(Long userId, Long credit, Long matureSpanMillis) {
+        long cur = System.currentTimeMillis();
+        String key = userCreditDrops(userId);
+        cmdAsync.zadd(key,  cur + matureSpanMillis.doubleValue(), dropValue(credit, cur));
+        cmdAsync.pexpire(key, matureSpanMillis + EXPIRE_SPAN * 2);
+        cmdAsync.zremrangebyscore(key, Range.create(0, cur - EXPIRE_SPAN));
+    }
+
+    @Override
+    public Long removeCreditDrop(Long pickedUserId, String value) {
+        return cmdSync.zrem(userCreditDrops(pickedUserId), value);
+    }
+
+    private String dropValue(Long credit, Long cur) {
+        return cur + "." + credit;
     }
 }

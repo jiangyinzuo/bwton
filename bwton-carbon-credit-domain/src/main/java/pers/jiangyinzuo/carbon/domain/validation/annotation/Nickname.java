@@ -1,6 +1,6 @@
-package pers.jiangyinzuo.carbon.validation.annotation;
+package pers.jiangyinzuo.carbon.domain.validation.annotation;
 
-import pers.jiangyinzuo.carbon.validation.validator.TelephoneValidator;
+import pers.jiangyinzuo.carbon.domain.validation.validator.NicknameValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,17 +9,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.ElementType.TYPE_USE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Jiang Yinzuo
  */
 @Documented
-@Constraint(validatedBy = TelephoneValidator.class)
+@Constraint(validatedBy = NicknameValidator.class)
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
-public @interface Telephone {
-    String message() default "手机号格式错误";
+public @interface Nickname {
+    String message() default "昵称不能包括特殊字符";
 
     Class<?>[] groups() default {};
 

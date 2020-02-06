@@ -22,4 +22,9 @@ public class CreditCacheTest {
         var result = creditCache.getCredits(List.of(1L, 2L), "total");
         assertEquals(2, result.size());
     }
+
+    @Test
+    public void testAddCreditDrop() {
+        System.out.println(System.currentTimeMillis() + "." + 40);
+    }
 }

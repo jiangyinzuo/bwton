@@ -1,9 +1,9 @@
 package pers.jiangyinzuo.carbon.domain.dto;
 
 import lombok.Data;
-import pers.jiangyinzuo.carbon.validation.annotation.Nickname;
-import pers.jiangyinzuo.carbon.validation.annotation.Password;
-import pers.jiangyinzuo.carbon.validation.annotation.Telephone;
+import pers.jiangyinzuo.carbon.domain.validation.annotation.Nickname;
+import pers.jiangyinzuo.carbon.domain.validation.annotation.Password;
+import pers.jiangyinzuo.carbon.domain.validation.annotation.Telephone;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;

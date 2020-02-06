@@ -39,7 +39,7 @@ public class LettuceConfig {
     }
 
     @Bean
-    public StatefulRedisConnection<String, String> statefulRedisConnection(RedisClient redisClient) {
+    public StatefulRedisConnection<String, String> redisConnectionStr(RedisClient redisClient) {
         return redisClient.connect();
     }
 }

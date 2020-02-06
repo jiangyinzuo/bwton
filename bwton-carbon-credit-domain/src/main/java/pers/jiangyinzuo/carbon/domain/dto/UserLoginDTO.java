@@ -2,8 +2,8 @@ package pers.jiangyinzuo.carbon.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import pers.jiangyinzuo.carbon.validation.annotation.Password;
-import pers.jiangyinzuo.carbon.validation.annotation.Telephone;
+import pers.jiangyinzuo.carbon.domain.validation.annotation.Password;
+import pers.jiangyinzuo.carbon.domain.validation.annotation.Telephone;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;

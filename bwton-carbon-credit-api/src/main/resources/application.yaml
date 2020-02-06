@@ -1,5 +1,5 @@
 server:
-  port: 8089
+  port: 8090
   tomcat:
     uri-encoding: UTF-8
   servlet:
@@ -9,6 +9,7 @@ logging:
   config: classpath:log4j2.xml
 spring:
   profiles:
+    # dev/prod
     active: dev
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss

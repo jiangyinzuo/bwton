@@ -7,8 +7,10 @@
         SELECT user_id, telephone, cipher, salt FROM bwton_user WHERE telephone = #{telephone}
     </select>
     <insert id="saveUserAccount">
-        INSERT INTO bwton_user(nickname, cipher, salt, telephone)
-        VALUES (#{nickname}, #{cipher}, #{salt}, #{telephone})
+        INSERT INTO bwton_user(nickname, cipher, salt, telephone) VALUES (#{nickname}, #{cipher}, #{salt}, #{telephone})
+    </insert>
+    <insert id="saveUserProps">
+        INSERT INTO bwton_user_prop(user_id) VALUES (LAST_INSERT_ID())
     </insert>
     <select id="exists" resultType="Boolean">
         SELECT EXISTS(SELECT 1 FROM bwton_user WHERE user_id = #{userId})

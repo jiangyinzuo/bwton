@@ -2,9 +2,6 @@ package pers.jiangyinzuo.carbon.dao.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
-import pers.jiangyinzuo.carbon.domain.entity.User;
-
-import java.util.List;
 
 /**
  * @author Jiang Yinzuo
@@ -30,7 +27,7 @@ public interface UserMapper {
      */
     void saveUserAccount(String nickname, String cipher, byte[] salt, String telephone);
 
-    List<User> getUsers(List<Long> userIds);
+    void saveUserProps();
 
     /**
      * 查询一个用户是否存在

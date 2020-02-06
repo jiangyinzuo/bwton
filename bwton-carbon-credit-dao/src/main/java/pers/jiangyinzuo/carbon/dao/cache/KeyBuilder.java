@@ -18,6 +18,10 @@ public class KeyBuilder {
         return BWTON_USER + userId + CREDIT + RECORD + dayOfWeek;
     }
 
+    public static String userCreditDrops(Long userId) {
+        return BWTON_USER + userId + CREDIT + "drops";
+    }
+
     public static String userSignatureKey(String userId) {
         return BWTON_USER + userId + ":sk";
     }

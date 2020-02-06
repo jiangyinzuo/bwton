@@ -1,6 +1,6 @@
-package pers.jiangyinzuo.carbon.validation.annotation;
+package pers.jiangyinzuo.carbon.domain.validation.annotation;
 
-import pers.jiangyinzuo.carbon.validation.validator.IDValidator;
+import pers.jiangyinzuo.carbon.domain.validation.validator.IDValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
