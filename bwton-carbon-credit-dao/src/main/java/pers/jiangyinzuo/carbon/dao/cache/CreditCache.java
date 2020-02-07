@@ -32,7 +32,7 @@ public interface CreditCache {
      * @param collectedUserId 被收取的好友ID
      * @param credit 收取的碳积分
      */
-    void collectCredits(Long userId, Long collectedUserId, Integer credit);
+    void pickCreditsAsync(Long userId, Long collectedUserId, Integer credit);
 
     /**
      * 增加积分小水滴
@@ -40,7 +40,7 @@ public interface CreditCache {
      * @param credit 小水滴数值
      * @param matureSpanMillis 水滴成熟时间间隔
      */
-    void addCreditDrop(Long userId, Long credit, Long matureSpanMillis);
+    void addCreditDropAsync(Long userId, Long credit, Long matureSpanMillis);
 
     /**
      * 移除积分小水滴

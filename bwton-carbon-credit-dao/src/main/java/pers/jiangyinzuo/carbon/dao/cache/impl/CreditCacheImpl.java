@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.BaseCache;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
+import pers.jiangyinzuo.carbon.domain.dto.DropPickingDTO;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,11 +26,6 @@ import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
 @Repository
 @Log4j2
 public class CreditCacheImpl extends BaseCache implements CreditCache {
-
-    /**
-     * 每个积分小水滴的过期时间
-     */
-    private static final long EXPIRE_SPAN = 24 * 3600 * 1000L;
 
     @Override
     public List<Long> getCredits(Collection<Long> usersId, String mode) {
@@ -80,7 +76,7 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public void collectCredits(Long userId, Long collectedUserId, Integer credit) {
+    public void pickCreditsAsync(Long userId, Long collectedUserId, Integer credit) {
         cmdAsync.incrby(userCredit(userId, "total"), credit);
         cmdAsync.incrby(userCredit(userId, "today"), credit);
         cmdAsync.incrby(userCredit(userId, "week"), credit);
@@ -92,12 +88,12 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public void addCreditDrop(Long userId, Long credit, Long matureSpanMillis) {
+    public void addCreditDropAsync(Long userId, Long credit, Long matureSpanMillis) {
         long cur = System.currentTimeMillis();
         String key = userCreditDrops(userId);
         cmdAsync.zadd(key,  cur + matureSpanMillis.doubleValue(), dropValue(credit, cur));
-        cmdAsync.pexpire(key, matureSpanMillis + EXPIRE_SPAN * 2);
-        cmdAsync.zremrangebyscore(key, Range.create(0, cur - EXPIRE_SPAN));
+        cmdAsync.pexpire(key, matureSpanMillis + DropPickingDTO.EXPIRE_SPAN * 2);
+        cmdAsync.zremrangebyscore(key, Range.create(0, cur - DropPickingDTO.EXPIRE_SPAN));
     }
 
     @Override
@@ -109,7 +105,7 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     public List<String> getCreditDrops(Long userId) {
 
         // 积分小水滴的最小未过期时间戳
-        long minUnexpiredTime = System.currentTimeMillis() - EXPIRE_SPAN;
+        long minUnexpiredTime = System.currentTimeMillis() - DropPickingDTO.EXPIRE_SPAN;
 
         return cmdSync.zrangebyscore(userCreditDrops(userId), Range.create(minUnexpiredTime, Long.MAX_VALUE));
     }

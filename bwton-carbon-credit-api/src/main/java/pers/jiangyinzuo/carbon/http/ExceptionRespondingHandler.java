@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -55,9 +55,9 @@ public class ExceptionRespondingHandler {
         return UPDATE_FAILED;
     }
 
-    @ExceptionHandler({MissingServletRequestParameterException.class})
+    @ExceptionHandler({ServletRequestBindingException.class})
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> missingParams(MissingServletRequestParameterException e) {
+    public ResponseEntity<Map<String, Object>> missingParams(ServletRequestBindingException e) {
         return BAD_REQUEST;
     }
     

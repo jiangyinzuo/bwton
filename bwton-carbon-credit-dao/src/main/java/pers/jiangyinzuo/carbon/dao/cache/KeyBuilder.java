@@ -22,6 +22,10 @@ public class KeyBuilder {
         return BWTON_USER + userId + CREDIT + "drops";
     }
 
+    public static String userQuestProgress(Long userId) {
+        return BWTON_USER + userId + ":quest:progress";
+    }
+
     public static String userSignatureKey(String userId) {
         return BWTON_USER + userId + ":sk";
     }

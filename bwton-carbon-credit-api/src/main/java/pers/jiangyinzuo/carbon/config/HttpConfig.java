@@ -56,10 +56,16 @@ class RefererInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String referer = request.getHeader("referer");
-        if (referer == null || !allowedOrigins.contains(referer)) {
+        if (referer == null) {
             response.setStatus(404);
             return false;
         }
-        return true;
+        for (String prefix : allowedOrigins) {
+            if (referer.startsWith(prefix)) {
+                return true;
+            }
+        }
+        response.setStatus(404);
+        return false;
     }
 }

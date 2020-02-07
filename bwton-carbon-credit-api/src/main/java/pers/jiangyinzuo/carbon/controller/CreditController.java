@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pers.jiangyinzuo.carbon.domain.dto.DropPickingDTO;
 import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
@@ -37,8 +38,7 @@ public class CreditController {
     public ResponseEntity<Object> getLeaderBoard(
             @RequestHeader("Authorization") String authToken,
             @Validated @ID @RequestParam Long userId,
-            @PathVariable String mode
-    ) {
+            @PathVariable String mode) {
         if (!LEADERBOARD_MODE.contains(mode)) {
             return HttpResponse.NOT_FOUND;
         }
@@ -61,5 +61,24 @@ public class CreditController {
         Map<String, Object> data = new HashMap<>(1);
         data.put("drops", drops);
         return HttpResponse.ok(data);
+    }
+
+    @PostMapping("/creditDrop")
+    public ResponseEntity<Object> pickCreditDrop(@Validated @RequestBody DropPickingDTO dropPickingDTO) {
+        if (dropPickingDTO.isOutOfDate()) {
+            return HttpResponse.badRequest("小水滴已过期");
+        }
+
+        // 帮自己摘小水滴
+        if (dropPickingDTO.isSelf()) {
+
+        } else if (friendService.isFriend(dropPickingDTO.getPickedUserId(), dropPickingDTO.getPickerUserId())) {
+            // 帮好友摘
+
+        } else { // 既不是自己也不是好友, 权限不够
+            return HttpResponse.FORBIDDEN;
+        }
+
+        return HttpResponse.OK;
     }
 }

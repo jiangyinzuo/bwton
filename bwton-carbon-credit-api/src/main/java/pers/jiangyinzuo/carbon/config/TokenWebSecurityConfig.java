@@ -103,6 +103,25 @@ class TokenAuthenticationProvider implements AuthenticationProvider {
     }
 }
 
+class AuthenticationEntryPointHandler implements AuthenticationEntryPoint {
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        Map<String, Object> data = new HashMap<>(2);
+        data.put("errCode", -1);
+        data.put("errMsg", authException.getMessage());
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String resBody = objectMapper.writeValueAsString(data);
+        PrintWriter printWriter = response.getWriter();
+        printWriter.print(resBody);
+        printWriter.flush();
+        printWriter.close();
+    }
+}
+
 @Component
 class TokenAuthenticationFilter extends OncePerRequestFilter {
 
@@ -130,25 +149,6 @@ class TokenAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(new AuthenticationToken(false));
         }
         filterChain.doFilter(request, response);
-    }
-}
-
-class AuthenticationEntryPointHandler implements AuthenticationEntryPoint {
-
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        Map<String, Object> data = new HashMap<>(2);
-        data.put("errCode", -1);
-        data.put("errMsg", authException.getMessage());
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.setCharacterEncoding("utf-8");
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String resBody = objectMapper.writeValueAsString(data);
-        PrintWriter printWriter = response.getWriter();
-        printWriter.print(resBody);
-        printWriter.flush();
-        printWriter.close();
     }
 }
 

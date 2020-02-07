@@ -6,27 +6,25 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pers.jiangyinzuo.carbon.domain.entity.UserProps;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.http.HttpResponse;
-import pers.jiangyinzuo.carbon.service.PropService;
+import pers.jiangyinzuo.carbon.service.QuestService;
 
 /**
  * @author Jiang Yinzuo
  */
 @RestController
-public class PropController {
+public class QuestController {
 
-    private PropService propService;
+    private QuestService questService;
 
     @Autowired
-    public PropController(PropService propService) {
-        this.propService = propService;
+    public QuestController(QuestService questService) {
+        this.questService = questService;
     }
 
-    @GetMapping("/prop")
-    public ResponseEntity<Object> getProps(@Validated @RequestParam @ID Long userId) {
-        UserProps userProps = propService.getProps(userId);
-        return HttpResponse.ok(userProps);
+    @GetMapping("/quest")
+    public ResponseEntity<Object> getQuestProgress(@Validated @RequestParam @ID Long userId) {
+        return HttpResponse.ok(questService.getQuestProgress(userId));
     }
 }

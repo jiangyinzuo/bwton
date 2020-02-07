@@ -6,6 +6,9 @@ import pers.jiangyinzuo.carbon.dao.mapper.PropMapper;
 import pers.jiangyinzuo.carbon.domain.entity.UserProps;
 import pers.jiangyinzuo.carbon.service.PropService;
 
+/**
+ * @author Jiang Yinzuo
+ */
 @Service
 public class PropServiceImpl implements PropService {
 
