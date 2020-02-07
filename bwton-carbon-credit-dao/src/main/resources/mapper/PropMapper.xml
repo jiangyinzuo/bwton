@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.jiangyinzuo.carbon.dao.mapper.PropMapper">
+  <select id="getProps" resultType="pers.jiangyinzuo.carbon.domain.entity.UserProps">
+      SELECT
+          speeder, cover, lottery, reissue_card
+      FROM
+          bwton_user_prop
+      WHERE
+          user_id = #{userId}
+  </select>
+</mapper>

@@ -1,5 +1,8 @@
+http:
+  allowed-origins:
+    - "http://47.95.204.239:8000"
 spring:
-  profiles: dev
+  profiles: prod
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver

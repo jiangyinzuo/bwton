@@ -1,0 +1,23 @@
+http:
+  allowed-origins:
+    - "http://localhost:4040"
+    - "http://localhost:5000"
+    - "http://localhost:8080"
+    - "http://47.95.204.239:8000"
+spring:
+  profiles: dev
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bwton?serverTimezone=GMT%2B8
+    username: bwton
+    password: 123456
+    hikari:
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 10
+      auto-commit: true
+      idle-timeout: 600000
+      pool-name: DataSourceHikarliCP
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1

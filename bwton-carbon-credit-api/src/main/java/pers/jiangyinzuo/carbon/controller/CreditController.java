@@ -52,12 +52,12 @@ public class CreditController {
     @GetMapping("/creditDrop")
     public ResponseEntity<Object> getCreditDrop(
             @RequestHeader("Authorization") String authToken,
-            @Validated @ID @RequestParam Long friendId) {
-        Long userId = HttpHeaderUtil.getUserId(authToken);
-        if (!friendService.isFriend(userId, friendId)) {
+            @Validated @ID @RequestParam Long userId) {
+        Long uid = HttpHeaderUtil.getUserId(authToken);
+        if (!(uid.equals(userId) || friendService.isFriend(uid, userId))) {
             return HttpResponse.FORBIDDEN;
         }
-        List<String> drops = creditService.getCreditDrops(friendId);
+        List<String> drops = creditService.getCreditDrops(userId);
         Map<String, Object> data = new HashMap<>(1);
         data.put("drops", drops);
         return HttpResponse.ok(data);
