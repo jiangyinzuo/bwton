@@ -33,5 +33,7 @@
         AND
             bwton_friendship.user1_id = bwton_user.user_id
     </select>
-
+    <select id="isFriend" resultType="Boolean">
+        SELECT EXISTS(SELECT 1 FROM bwton_friendship WHERE user1_id = #{user1Id} AND user2_id = #{user2Id})
+    </select>
 </mapper>

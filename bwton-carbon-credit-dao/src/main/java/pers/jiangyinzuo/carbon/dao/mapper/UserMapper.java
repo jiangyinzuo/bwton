@@ -27,6 +27,9 @@ public interface UserMapper {
      */
     void saveUserAccount(String nickname, String cipher, byte[] salt, String telephone);
 
+    /**
+     * 添加用户道具
+     */
     void saveUserProps();
 
     /**

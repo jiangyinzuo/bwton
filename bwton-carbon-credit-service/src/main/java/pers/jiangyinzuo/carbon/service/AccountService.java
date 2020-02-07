@@ -1,5 +1,6 @@
 package pers.jiangyinzuo.carbon.service;
 
+import pers.jiangyinzuo.carbon.http.BusinessException;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
 
@@ -22,5 +23,5 @@ public interface AccountService {
      * 注册账号，一个手机号只能注册一个用户账号
      * @param userRegisterDTO 用户注册DTO
      */
-    void register(UserRegisterDTO userRegisterDTO);
+    void register(UserRegisterDTO userRegisterDTO) throws BusinessException;
 }

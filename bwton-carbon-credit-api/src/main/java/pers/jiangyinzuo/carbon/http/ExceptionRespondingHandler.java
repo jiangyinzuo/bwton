@@ -1,4 +1,4 @@
-package pers.jiangyinzuo.carbon.common.http;
+package pers.jiangyinzuo.carbon.http;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.log4j.Log4j2;
@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,11 +23,17 @@ import java.util.Objects;
  */
 @Log4j2
 @ControllerAdvice
-public class HttpExceptionHandler {
+public class ExceptionRespondingHandler {
 
-    @ExceptionHandler(CustomHttpException.class)
+    private static final ResponseEntity<Map<String, Object>> JSON_PARSE_FAILED = new ResponseEntity<>(createBody("JSON解析错误"), HttpStatus.BAD_REQUEST);
+    private static final ResponseEntity<Map<String, Object>> UPDATE_FAILED = new ResponseEntity<>(createBody("添加失败"), HttpStatus.BAD_REQUEST);
+    private static final ResponseEntity<Map<String, Object>> BAD_REQUEST = new ResponseEntity<>(createBody("参数错误"), HttpStatus.BAD_REQUEST);
+    private static final ResponseEntity<Void> INCORRECT_METHOD = new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
+    private static final ResponseEntity<Map<String, Object>> UNKNOWN_ERROR = new ResponseEntity<>(createBody("未知错误"), HttpStatus.INTERNAL_SERVER_ERROR);
+
+    @ExceptionHandler(BusinessException.class)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> handleCustomHttpException(CustomHttpException e) {
+    public ResponseEntity<Map<String, Object>> handleCustomHttpException(BusinessException e) {
         return new ResponseEntity<>(createBody(e.getErrMsg()), e.getStatusCode());
     }
 
@@ -39,25 +46,32 @@ public class HttpExceptionHandler {
     @ExceptionHandler({HttpMessageNotReadableException.class, JsonParseException.class})
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleJsonParseException(Exception e) {
-        return new ResponseEntity<>(createBody("JSON解析错误"), HttpStatus.BAD_REQUEST);
+        return JSON_PARSE_FAILED;
     }
 
     @ExceptionHandler({DuplicateKeyException.class})
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleDuplicateKeyException(DuplicateKeyException e) {
-        return new ResponseEntity<>(createBody("添加失败"), HttpStatus.BAD_REQUEST);
+        return UPDATE_FAILED;
+    }
+
+    @ExceptionHandler({MissingServletRequestParameterException.class})
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> missingParams(MissingServletRequestParameterException e) {
+        return BAD_REQUEST;
     }
     
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        return new ResponseEntity<>(createBody("请求方法错误"), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        return INCORRECT_METHOD;
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleUnexpectedException(Exception e) {
-        return new ResponseEntity<>(createBody("未知错误"), HttpStatus.INTERNAL_SERVER_ERROR);
+        log.error(e);
+        return UNKNOWN_ERROR;
     }
 
     private static Map<String, Object> createBody(String errMsg) {

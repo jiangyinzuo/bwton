@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
+import pers.jiangyinzuo.carbon.service.CreditService;
 import pers.jiangyinzuo.carbon.service.FriendService;
-import pers.jiangyinzuo.carbon.service.LeaderboardService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,19 +15,19 @@ import java.util.List;
  * @author Jiang Yinzuo
  */
 @Service
-public class LeaderboardServiceImpl implements LeaderboardService {
+public class CreditServiceImpl implements CreditService {
 
     private FriendService friendService;
     private CreditCache creditCache;
 
     @Autowired
-    public LeaderboardServiceImpl(FriendService friendService, CreditCache creditCache) {
+    public CreditServiceImpl(FriendService friendService, CreditCache creditCache) {
         this.friendService = friendService;
         this.creditCache = creditCache;
     }
 
     @Override
-    public LeaderBoardVO getLeaderBoard(Long userId, Mode mode) {
+    public LeaderBoardVO getLeaderBoard(Long userId, String mode) {
 
         List<User> userList = friendService.getUserAndFriends(userId);
 
@@ -36,8 +36,13 @@ public class LeaderboardServiceImpl implements LeaderboardService {
             userIdList.add(user.getUserId());
         }
 
-        List<Long> creditList = creditCache.getCredits(userIdList, "total");
+        List<Long> creditList = creditCache.getCredits(userIdList, mode);
 
         return LeaderBoardVO.create(userList, creditList);
+    }
+
+    @Override
+    public List<String> getCreditDrops(Long userId) {
+        return creditCache.getCreditDrops(userId);
     }
 }

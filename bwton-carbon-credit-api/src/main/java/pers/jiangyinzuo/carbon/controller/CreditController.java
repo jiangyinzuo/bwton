@@ -1,13 +1,20 @@
 package pers.jiangyinzuo.carbon.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pers.jiangyinzuo.carbon.common.http.HttpResponseBody;
-import pers.jiangyinzuo.carbon.domain.dto.CreditDropPickingDTO;
-import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
-import pers.jiangyinzuo.carbon.service.LeaderboardService;
+import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
+import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
+import pers.jiangyinzuo.carbon.service.CreditService;
+import pers.jiangyinzuo.carbon.service.FriendService;
+import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Jiang Yinzuo
@@ -15,22 +22,44 @@ import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 @RestController
 public class CreditController {
 
-    private LeaderboardService leaderBoardService;
+    private CreditService creditService;
+    private FriendService friendService;
+
+    private static final Set<String> LEADERBOARD_MODE = Set.of("total", "week");
 
     @Autowired
-    public void setLeaderBoardService(LeaderboardService leaderBoardService) {
-        this.leaderBoardService = leaderBoardService;
+    public void setLeaderBoardService(CreditService creditService, FriendService friendService) {
+        this.creditService = creditService;
+        this.friendService = friendService;
     }
 
-    @GetMapping("/leaderboard/total")
-    public HttpResponseBody<LeaderBoardVO> getLeaderBoard(@Validated @ID @RequestParam Long userId) {
-        LeaderBoardVO vo = leaderBoardService.getLeaderBoard(userId, LeaderboardService.Mode.TOTAL);
-        return new HttpResponseBody<>(0, "ok", vo);
+    @GetMapping("/leaderboard/{mode}")
+    public ResponseEntity<Object> getLeaderBoard(
+            @RequestHeader("Authorization") String authToken,
+            @Validated @ID @RequestParam Long userId,
+            @PathVariable String mode
+    ) {
+        if (!LEADERBOARD_MODE.contains(mode)) {
+            return HttpResponse.NOT_FOUND;
+        }
+        if (!userId.equals(HttpHeaderUtil.getUserId(authToken))) {
+            return HttpResponse.FORBIDDEN;
+        }
+        LeaderBoardVO vo = creditService.getLeaderBoard(userId, mode);
+        return HttpResponse.ok(vo);
     }
 
-    @PostMapping("/creditDrop")
-    public HttpResponseBody<Void> pickCreditDrop(@Validated @RequestBody CreditDropPickingDTO dropPickingDTO) {
-        System.out.println(dropPickingDTO);
-        return new HttpResponseBody<>(0, "ok", null);
+    @GetMapping("/creditDrop")
+    public ResponseEntity<Object> getCreditDrop(
+            @RequestHeader("Authorization") String authToken,
+            @Validated @ID @RequestParam Long friendId) {
+        Long userId = HttpHeaderUtil.getUserId(authToken);
+        if (!friendService.isFriend(userId, friendId)) {
+            return HttpResponse.FORBIDDEN;
+        }
+        List<String> drops = creditService.getCreditDrops(friendId);
+        Map<String, Object> data = new HashMap<>(1);
+        data.put("drops", drops);
+        return HttpResponse.ok(data);
     }
 }

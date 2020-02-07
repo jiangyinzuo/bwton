@@ -1,9 +1,11 @@
 package pers.jiangyinzuo.carbon.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pers.jiangyinzuo.carbon.common.http.HttpResponseBody;
+import pers.jiangyinzuo.carbon.http.BusinessException;
+import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
 import pers.jiangyinzuo.carbon.service.AccountService;
@@ -33,15 +35,15 @@ public class AccountController {
     }
 
     @PostMapping("/register")
-    public HttpResponseBody<Object> register(
+    public ResponseEntity<Object> register(
             @Validated @RequestBody UserRegisterDTO userRegisterDTO
-            ) {
+            ) throws BusinessException {
         accountService.register(userRegisterDTO);
-        return new HttpResponseBody<>(0, "ok", null);
+        return HttpResponse.OK;
     }
 
     @PostMapping("/login")
-    public HttpResponseBody<Map<String, Object>> login(
+    public ResponseEntity<Object> login(
             @Validated @RequestBody UserLoginDTO userLoginDTO
             ) {
         Long userId = accountService.login(userLoginDTO);
@@ -49,21 +51,21 @@ public class AccountController {
             Map<String, Object> data = new HashMap<>(1);
             data.put("token", tokenService.genBase64Token(userId.toString()));
             data.put("userId", userId);
-            return new HttpResponseBody<>(0, "ok", data);
+            return HttpResponse.ok(data);
         } else {
-            String desc = userId == AccountService.PASSWORD_ERROR ? "密码错误" : "账号不存在";
-            return new HttpResponseBody<>(1, desc, null);
+            String errMsg = userId == AccountService.PASSWORD_ERROR ? "密码错误" : "账号不存在";
+            return HttpResponse.ok(1, errMsg);
         }
     }
 
     @PutMapping("/token")
-    public HttpResponseBody<Map<String, Object>> refreshToken(
+    public ResponseEntity<Object> refreshToken(
             @RequestHeader("Authorization") String authToken) {
         String newBase64Token = tokenService.refreshBase64Token(authToken.substring(7));
         Long userId = HttpHeaderUtil.getUserId(authToken);
         Map<String, Object> data = new HashMap<>(1);
         data.put("token", newBase64Token);
         data.put("userId", userId);
-        return new HttpResponseBody<>(0, "ok", data);
+        return HttpResponse.ok(data);
     }
 }

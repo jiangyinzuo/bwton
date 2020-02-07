@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * 积分小水滴以 value=成熟时间戳.水滴数值, score=成熟时间戳 的形式存在Redis有序集合中。
+ * 每个小水滴过期时间固定
+ *
  * @author Jiang Yinzuo
  */
 public interface CreditCache {
@@ -11,10 +14,10 @@ public interface CreditCache {
     /**
      * 查询多个用户的总碳积分
      * @param usersId 用户ID集合
-     * @param span 时间间隔 total, today, week, remain
+     * @param mode 时间间隔 total, today, week, remain
      * @return 用户碳积分
      */
-    List<Long> getCredits(Collection<Long> usersId, String span);
+    List<Long> getCredits(Collection<Long> usersId, String mode);
 
     /**
      * 获取好友碳积分被收取记录
@@ -46,4 +49,6 @@ public interface CreditCache {
      * @return 1: 采摘成功; 0: 小水滴不存在;
      */
     Long removeCreditDrop(Long pickedUserId, String value);
+
+    List<String> getCreditDrops(Long userId);
 }

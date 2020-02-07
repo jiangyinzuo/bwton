@@ -26,14 +26,17 @@ import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
 @Log4j2
 public class CreditCacheImpl extends BaseCache implements CreditCache {
 
+    /**
+     * 每个积分小水滴的过期时间
+     */
     private static final long EXPIRE_SPAN = 24 * 3600 * 1000L;
 
     @Override
-    public List<Long> getCredits(Collection<Long> usersId, String span) {
+    public List<Long> getCredits(Collection<Long> usersId, String mode) {
 
         List<Future<String>> futures = new ArrayList<>();
         for (Long id : usersId) {
-            futures.add(cmdAsync.get(userCredit(id, span)));
+            futures.add(cmdAsync.get(userCredit(id, mode)));
         }
         LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futures.toArray(new Future[0]));
         List<Long> result = new ArrayList<>(futures.size());
@@ -100,6 +103,15 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     @Override
     public Long removeCreditDrop(Long pickedUserId, String value) {
         return cmdSync.zrem(userCreditDrops(pickedUserId), value);
+    }
+
+    @Override
+    public List<String> getCreditDrops(Long userId) {
+
+        // 积分小水滴的最小未过期时间戳
+        long minUnexpiredTime = System.currentTimeMillis() - EXPIRE_SPAN;
+
+        return cmdSync.zrangebyscore(userCreditDrops(userId), Range.create(minUnexpiredTime, Long.MAX_VALUE));
     }
 
     private String dropValue(Long credit, Long cur) {

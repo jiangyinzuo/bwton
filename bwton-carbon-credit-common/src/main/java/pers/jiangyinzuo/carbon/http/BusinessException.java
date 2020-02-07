@@ -1,17 +1,17 @@
-package pers.jiangyinzuo.carbon.common.http;
+package pers.jiangyinzuo.carbon.http;
 
 import org.springframework.http.HttpStatus;
 
 /**
  * @author Jiang Yinzuo
  */
-public class CustomHttpException extends RuntimeException {
+public class BusinessException extends Exception {
 
     private final HttpStatus statusCode;
     private final String errMsg;
     private final int errCode;
 
-    public CustomHttpException(HttpStatus statusCode, String errMsg, int errCode) {
+    public BusinessException(HttpStatus statusCode, String errMsg, int errCode) {
         this.statusCode = statusCode;
         this.errMsg = errMsg;
         this.errCode = errCode;

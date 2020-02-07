@@ -7,14 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class LeaderboardServiceTest {
+public class CreditServiceTest {
 
     @Autowired
-    private LeaderboardService leaderboardService;
+    private CreditService creditService;
 
     @Test
     public void testGetTotalLeaderboard()  {
-        var result = leaderboardService.getLeaderBoard(1L, LeaderboardService.Mode.TOTAL);
+        var result = creditService.getLeaderBoard(1L, "total");
         assertEquals(1L, result.getUser().getUserId());
     }
 }
