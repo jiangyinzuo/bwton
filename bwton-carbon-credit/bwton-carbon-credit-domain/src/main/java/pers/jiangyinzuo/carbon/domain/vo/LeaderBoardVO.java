@@ -22,6 +22,11 @@ public class LeaderBoardVO {
 
     public static LeaderBoardVO create(List<User> userList, List<Long> creditList) {
         LeaderBoardVO vo = new LeaderBoardVO();
+
+        // 该用户不存在
+        if (userList.isEmpty()) {
+            return vo;
+        }
         vo.setUser(new LeaderBoardUserDTO((userList.get(0)), creditList.get(0)));
         int i = 0;
         for (User user : userList) {
