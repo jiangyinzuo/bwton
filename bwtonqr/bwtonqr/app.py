@@ -13,7 +13,7 @@ class Application(object):
 
     def __init__(self):
         self.__oss_client = OssClient()
-        self.__qrcode_generator = QRCodeGenerator()
+        self.__qr_code_generator = QRCodeGenerator()
 
     def run(self) -> None:
         """
