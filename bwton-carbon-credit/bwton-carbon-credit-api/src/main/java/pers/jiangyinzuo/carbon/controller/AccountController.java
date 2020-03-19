@@ -34,6 +34,12 @@ public class AccountController {
         this.tokenService = tokenService;
     }
 
+    /**
+     * 用户注册
+     * @param userRegisterDTO 请求体
+     * @return Http请求
+     * @throws BusinessException 业务逻辑错误
+     */
     @PostMapping("/register")
     public ResponseEntity<Object> register(
             @Validated @RequestBody UserRegisterDTO userRegisterDTO
@@ -42,6 +48,11 @@ public class AccountController {
         return HttpResponse.OK;
     }
 
+    /**
+     * 用户登录
+     * @param userLoginDTO
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<Object> login(
             @Validated @RequestBody UserLoginDTO userLoginDTO
@@ -58,6 +69,11 @@ public class AccountController {
         }
     }
 
+    /**
+     * 刷新token
+     * @param authToken
+     * @return
+     */
     @PutMapping("/token")
     public ResponseEntity<Object> refreshToken(
             @RequestHeader("Authorization") String authToken) {

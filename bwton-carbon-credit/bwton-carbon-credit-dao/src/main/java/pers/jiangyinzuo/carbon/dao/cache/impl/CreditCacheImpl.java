@@ -3,11 +3,12 @@ package pers.jiangyinzuo.carbon.dao.cache.impl;
 import io.lettuce.core.LettuceFutures;
 import io.lettuce.core.Range;
 import io.lettuce.core.RedisFuture;
+import io.lettuce.core.ScoredValue;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.BaseCache;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
-import pers.jiangyinzuo.carbon.domain.dto.DropPickingDTO;
+import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,7 +29,7 @@ import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
 public class CreditCacheImpl extends BaseCache implements CreditCache {
 
     @Override
-    public List<Long> getCredits(Collection<Long> usersId, String mode) {
+    public List<Long> getUsersCredits(Collection<Long> usersId, String mode) {
 
         List<Future<String>> futures = new ArrayList<>();
         for (Long id : usersId) {
@@ -88,12 +89,36 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public void addCreditDropAsync(Long userId, Long credit, Long matureSpanMillis) {
-        long cur = System.currentTimeMillis();
+    public RedisFuture<Long> addCreditDropAsync(Long userId, Long credit, Long matureSpanMillis) {
+
+        // 小水滴成熟的时间戳
+        Long matureTimestamp = System.currentTimeMillis() + matureSpanMillis;
+
         String key = userCreditDrops(userId);
-        cmdAsync.zadd(key,  cur + matureSpanMillis.doubleValue(), dropValue(credit, cur));
-        cmdAsync.pexpire(key, matureSpanMillis + DropPickingDTO.EXPIRE_SPAN * 2);
-        cmdAsync.zremrangebyscore(key, Range.create(0, cur - DropPickingDTO.EXPIRE_SPAN));
+        RedisFuture<Long> future = cmdAsync.zadd(key,  matureTimestamp.doubleValue() , getCreditDropValue(matureTimestamp, credit));
+
+        // 为整个key设置过期时间
+        cmdAsync.pexpire(key, matureSpanMillis + CreditDrop.EXPIRE_SPAN);
+
+        // 移除已经过期的积分小水滴
+        cmdAsync.zremrangebyscore(key, Range.create(0, System.currentTimeMillis() - CreditDrop.EXPIRE_SPAN));
+
+        return future;
+    }
+
+    @Override
+    public long getCreditDropsSize(Long userId) {
+        return cmdSync.zcount(userCreditDrops(userId), Range.create(System.currentTimeMillis() - CreditDrop.EXPIRE_SPAN, Long.MAX_VALUE));
+    }
+
+    /**
+     *
+     * @param matureTimestamp 小水滴成熟的时间戳
+     * @param credit 小水滴积分值
+     * @return 积分小水滴保存在redis有序列表中的value
+     */
+    private String getCreditDropValue(Long matureTimestamp, Long credit) {
+        return matureTimestamp + "." + credit;
     }
 
     @Override
@@ -102,15 +127,10 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public List<String> getCreditDrops(Long userId) {
+    public List<ScoredValue<String>> getCreditDrops(Long userId) {
 
         // 积分小水滴的最小未过期时间戳
-        long minUnexpiredTime = System.currentTimeMillis() - DropPickingDTO.EXPIRE_SPAN;
-
-        return cmdSync.zrangebyscore(userCreditDrops(userId), Range.create(minUnexpiredTime, Long.MAX_VALUE));
-    }
-
-    private String dropValue(Long credit, Long cur) {
-        return cur + "." + credit;
+        long minUnexpiredTimestamp = System.currentTimeMillis() - CreditDrop.EXPIRE_SPAN;
+        return cmdSync.zrangebyscoreWithScores(userCreditDrops(userId), Range.create(minUnexpiredTimestamp, Long.MAX_VALUE));
     }
 }
