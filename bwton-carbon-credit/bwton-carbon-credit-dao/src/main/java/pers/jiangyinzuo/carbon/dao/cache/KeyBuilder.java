@@ -1,6 +1,8 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
 /**
+ * Redis所有的键
+ *
  * @author Jiang Yinzuo
  */
 public class KeyBuilder {

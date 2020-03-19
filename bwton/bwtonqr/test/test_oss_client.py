@@ -21,5 +21,5 @@ class TestOssClient:
         self.oss_client.upload_object('qrcode/123.png', data)
 
     def test_download_file(self):
-        img: Image.Image = self.oss_client.download_object('测试.png')
+        img: Image.Image = self.oss_client.download_object('avatar/456.png')
         img.save('test2.png')

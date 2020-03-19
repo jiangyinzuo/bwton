@@ -1,5 +1,6 @@
 package pers.jiangyinzuo.carbon.service;
 
+import io.lettuce.core.ScoredValue;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 
 import java.util.List;
@@ -22,5 +23,5 @@ public interface CreditService {
      * @param userId userId
      * @return 小水滴列表, 每个字符串由{UNIX时间戳}.{水滴数值}组成
      */
-    List<String> getCreditDrops(Long userId);
+    List<ScoredValue<String>> getCreditDrops(Long userId);
 }

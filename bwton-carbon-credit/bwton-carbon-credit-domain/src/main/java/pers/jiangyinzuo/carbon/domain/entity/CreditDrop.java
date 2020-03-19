@@ -1,4 +1,4 @@
-package pers.jiangyinzuo.carbon.domain.dto;
+package pers.jiangyinzuo.carbon.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -9,12 +9,20 @@ import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
  * @author Jiang Yinzuo
  */
 @Data
-public class DropPickingDTO {
+public class CreditDrop {
 
     /**
-     * 每个积分小水滴的过期时间
+     * 每个积分小水滴成熟到过期的时间间隔
      */
     public static final long EXPIRE_SPAN = 24 * 3600 * 1000L;
+    /**
+     * 积分小水滴成熟天数
+     */
+    public static final Long MATURE_SPAN_MILLIS = 24 * 3600 * 1000L;
+    /**
+     * 一个用户最多拥有的积分小水滴数量
+     */
+    public static final long MAXIMUM_CREDIT_DROP_COUNT = 10;
 
     /**
      * 采摘积分小水滴的用户ID
@@ -43,7 +51,7 @@ public class DropPickingDTO {
     @JsonIgnore
     private Integer value;
 
-    public DropPickingDTO(Long pickerUserId, Long pickedUserId, String dropValue) {
+    public CreditDrop(Long pickerUserId, Long pickedUserId, String dropValue) {
         this.pickerUserId = pickerUserId;
         this.pickedUserId = pickedUserId;
         this.dropValue = dropValue;

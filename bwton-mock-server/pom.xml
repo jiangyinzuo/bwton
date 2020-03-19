@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pers.jiangyinzuo.carbon</groupId>
+    <artifactId>bwton-mock-server</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>bwton-mock-server</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>13</java.version>
+        <maven.compiler.source>13</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
+        <springboot.version>2.2.5.RELEASE</springboot.version>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-config-spring -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-config-spring</artifactId>
+            <version>2.7.5</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>2.7.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-framework</artifactId>
+            <version>4.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>pers.jiangyinzuo.carbon</groupId>
+            <artifactId>bwton-carbon-credit-remote-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>

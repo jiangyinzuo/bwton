@@ -14,13 +14,17 @@ import java.util.TreeSet;
 @Data
 public class LeaderBoardVO {
     private LeaderBoardUserDTO user;
+
+    /**
+     * 排行榜中的用户必须按照积分排序
+     */
     private Set<LeaderBoardUserDTO> leaderboard;
 
     private LeaderBoardVO() {
         this.leaderboard = new TreeSet<>();
     }
 
-    public static LeaderBoardVO create(List<User> userList, List<Long> creditList) {
+    public static LeaderBoardVO newLeaderBoardVO(List<User> userList, List<Long> creditList) {
         LeaderBoardVO vo = new LeaderBoardVO();
 
         // 该用户不存在

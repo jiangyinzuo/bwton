@@ -1,5 +1,8 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
+import io.lettuce.core.RedisFuture;
+import io.lettuce.core.ScoredValue;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -14,10 +17,10 @@ public interface CreditCache {
     /**
      * 查询多个用户的总碳积分
      * @param usersId 用户ID集合
-     * @param mode 时间间隔 total, today, week, remain
-     * @return 用户碳积分
+     * @param mode 时间间隔 total, week, remain
+     * @return 用户碳积分列表（不按积分大小排序，同给定的用户ID集合顺序一致）
      */
-    List<Long> getCredits(Collection<Long> usersId, String mode);
+    List<Long> getUsersCredits(Collection<Long> usersId, String mode);
 
     /**
      * 获取好友碳积分被收取记录
@@ -40,7 +43,14 @@ public interface CreditCache {
      * @param credit 小水滴数值
      * @param matureSpanMillis 水滴成熟时间间隔
      */
-    void addCreditDropAsync(Long userId, Long credit, Long matureSpanMillis);
+    RedisFuture<Long> addCreditDropAsync(Long userId, Long credit, Long matureSpanMillis);
+
+    /**
+     * 获取一个用户当前积分小水滴个数
+     * @param userId 用户ID
+     * @return
+     */
+    long getCreditDropsSize(Long userId);
 
     /**
      * 移除积分小水滴
@@ -51,9 +61,9 @@ public interface CreditCache {
     Long removeCreditDrop(Long pickedUserId, String value);
 
     /**
-     * 获取积分小水滴
+     * 获取用户的积分小水滴
      * @param userId 用户ID
      * @return 积分小水滴列表
      */
-    List<String> getCreditDrops(Long userId);
+    List<ScoredValue<String>> getCreditDrops(Long userId);
 }

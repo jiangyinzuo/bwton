@@ -1,5 +1,6 @@
 package pers.jiangyinzuo.carbon.service.impl;
 
+import io.lettuce.core.ScoredValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
@@ -36,13 +37,13 @@ public class CreditServiceImpl implements CreditService {
             userIdList.add(user.getUserId());
         }
 
-        List<Long> creditList = creditCache.getCredits(userIdList, mode);
+        List<Long> creditList = creditCache.getUsersCredits(userIdList, mode);
 
-        return LeaderBoardVO.create(userList, creditList);
+        return LeaderBoardVO.newLeaderBoardVO(userList, creditList);
     }
 
     @Override
-    public List<String> getCreditDrops(Long userId) {
+    public List<ScoredValue<String>> getCreditDrops(Long userId) {
         return creditCache.getCreditDrops(userId);
     }
 }

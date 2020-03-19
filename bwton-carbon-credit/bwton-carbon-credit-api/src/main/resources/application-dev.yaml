@@ -9,8 +9,8 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/bwton?serverTimezone=GMT%2B8
-    username: root
+    url: jdbc:mysql://localhost:3306/bwton?serverTimezone=GMT%2B8
+    username: bwton
     password: 123456
     hikari:
       connection-timeout: 30000
@@ -21,3 +21,6 @@ spring:
       pool-name: DataSourceHikarliCP
       max-lifetime: 1800000
       connection-test-query: SELECT 1
+lettuce:
+  host: 0.0.0.0
+  port: 6379

@@ -39,7 +39,7 @@ class QRCodeGenerator:
         """制作二维码并保存"""
         self.__code_maker.add_data(self.__REQUEST_URL + str(user_id))
         self.__code_maker.make()
-        img: PilImage = self.__code_maker.make_image(fill_color="black", back_color="white")
+        img: PilImage = self.__code_maker.make_image(fill_color='#000000', back_color="white")
         return img
 
 
