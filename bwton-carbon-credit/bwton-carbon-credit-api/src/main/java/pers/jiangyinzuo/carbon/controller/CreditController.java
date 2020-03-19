@@ -39,7 +39,6 @@ public class CreditController {
 
     /**
      * 获取好友排行榜
-     *
      * @param authToken
      * @param userId
      * @param mode
