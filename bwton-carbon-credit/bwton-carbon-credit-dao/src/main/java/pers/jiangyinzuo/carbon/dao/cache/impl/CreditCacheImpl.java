@@ -8,17 +8,17 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.BaseCache;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
+import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
 import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static pers.jiangyinzuo.carbon.common.TimeUtil.getTodayTimestamp;
+import static pers.jiangyinzuo.carbon.common.TimeUtil.getBeginOfThisWeekTimestamp;
 import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
 
 /**
@@ -28,12 +28,17 @@ import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
 @Log4j2
 public class CreditCacheImpl extends BaseCache implements CreditCache {
 
+    /**
+     * 一周的时间间隔，单位毫秒
+     */
+    private static final long A_WEEK = 7 * 24 * 3600 * 1000L;
+
     @Override
-    public List<Long> getUsersCredits(Collection<Long> usersId, String mode) {
+    public List<Long> getUsersCredits(Collection<Long> usersId, CREDIT_RECORD_MODE mode) {
 
         List<Future<String>> futures = new ArrayList<>();
         for (Long id : usersId) {
-            futures.add(cmdAsync.get(userCredit(id, mode)));
+            futures.add(cmdAsync.get(userCredit(id, mode.getMode())));
         }
         LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futures.toArray(new Future[0]));
         List<Long> result = new ArrayList<>(futures.size());
@@ -52,10 +57,16 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
+    public Long getUserCredit(Long userId, CREDIT_RECORD_MODE mode) {
+        String credit = cmdSync.get(userCredit(userId, mode.getMode()));
+        return credit == null ? 0 : Long.parseLong(credit);
+    }
+
+    @Override
     public List<List<Integer>> getCreditCollectedRecord(Long friendId) {
         List<RedisFuture<List<String>>> futures = new ArrayList<>(7);
         for (int i = 1; i <= 7; ++i) {
-            futures.add(cmdAsync.lrange(userCreditRecord(friendId, i), 0, -1));
+            futures.add(cmdAsync.lrange(creditDropPickedRecord(friendId), 0, -1));
         }
         List<List<Integer>> collectedRecords = new ArrayList<>(7);
 
@@ -77,15 +88,12 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public void pickCreditsAsync(Long userId, Long collectedUserId, Integer credit) {
-        cmdAsync.incrby(userCredit(userId, "total"), credit);
-        cmdAsync.incrby(userCredit(userId, "today"), credit);
-        cmdAsync.incrby(userCredit(userId, "week"), credit);
+    public void addCreditsAsync(Long userId, Integer credit) {
 
-        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
-        String userCreditRecord = userCreditRecord(userId, dayOfWeek);
-        cmdAsync.rpush(userCreditRecord, credit.toString()).thenRun(() -> cmdAsync.expireat(userCreditRecord, getTodayTimestamp()));
+        // 用户碳积分累计总量、本周数量和剩余数量增加
+        cmdAsync.incrby(userCredit(userId, CREDIT_RECORD_MODE.TOTAL.getMode()), credit);
+        cmdAsync.incrby(userCredit(userId, CREDIT_RECORD_MODE.WEEK.getMode()), credit).thenRun(() -> cmdAsync.pexpireat(userCredit(userId, "week"), getBeginOfThisWeekTimestamp() + A_WEEK));
+        cmdAsync.incrby(userCredit(userId, CREDIT_RECORD_MODE.REMAIN.getMode()), credit);
     }
 
     @Override
@@ -95,7 +103,7 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
         Long matureTimestamp = System.currentTimeMillis() + matureSpanMillis;
 
         String key = userCreditDrops(userId);
-        RedisFuture<Long> future = cmdAsync.zadd(key,  matureTimestamp.doubleValue() , getCreditDropValue(matureTimestamp, credit));
+        RedisFuture<Long> future = cmdAsync.zadd(key, matureTimestamp.doubleValue(), getCreditDropValue(matureTimestamp, credit));
 
         // 为整个key设置过期时间
         cmdAsync.pexpire(key, matureSpanMillis + CreditDrop.EXPIRE_SPAN);
@@ -112,9 +120,8 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     /**
-     *
      * @param matureTimestamp 小水滴成熟的时间戳
-     * @param credit 小水滴积分值
+     * @param credit          小水滴积分值
      * @return 积分小水滴保存在redis有序列表中的value
      */
     private String getCreditDropValue(Long matureTimestamp, Long credit) {
@@ -122,8 +129,18 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public Long removeCreditDrop(Long pickedUserId, String value) {
-        return cmdSync.zrem(userCreditDrops(pickedUserId), value);
+    public boolean removeCreditDrop(CreditDrop creditDrop) {
+        long removedCount = cmdSync.zrem(userCreditDrops(creditDrop.getPickedUserId()), creditDrop.getDropValue());
+
+        // 该积分小水滴不存在
+        if (removedCount == 0) {
+            return false;
+        }
+        String dropPickedRecordKey = creditDropPickedRecord(creditDrop.getPickedUserId());
+
+        // 每次仅保留最新的7条记录
+        cmdAsync.lpush(dropPickedRecordKey, creditDrop.pickRecord()).thenRun(() -> cmdAsync.ltrim(dropPickedRecordKey, 0, 6));
+        return true;
     }
 
     @Override

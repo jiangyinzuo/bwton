@@ -4,7 +4,7 @@ import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
 import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
-import pers.jiangyinzuo.carbon.rpc.producer.CreditDropService;
+import pers.jiangyinzuo.carbon.rpc.producer.BwtonCreditService;
 
 import java.util.Random;
 
@@ -16,10 +16,10 @@ import java.util.Random;
         application = "${dubbo.application.id}",
         protocol = "${dubbo.protocol.id}",
         registry = "${dubbo.registry.id}",
-        interfaceClass = CreditDropService.class
+        interfaceClass = BwtonCreditService.class
 )
 @org.springframework.stereotype.Service
-public class CreditDropServiceImpl implements CreditDropService {
+public class BwtonCreditServiceImpl implements BwtonCreditService {
 
     private CreditCache creditCache;
     private static Random random = new Random(System.currentTimeMillis());
@@ -35,7 +35,7 @@ public class CreditDropServiceImpl implements CreditDropService {
     }
 
     @Autowired
-    public CreditDropServiceImpl(CreditCache creditCache) {
+    public BwtonCreditServiceImpl(CreditCache creditCache) {
         this.creditCache = creditCache;
     }
 

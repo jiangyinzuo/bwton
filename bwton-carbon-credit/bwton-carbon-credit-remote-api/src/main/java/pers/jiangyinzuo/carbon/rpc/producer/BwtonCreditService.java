@@ -3,7 +3,7 @@ package pers.jiangyinzuo.carbon.rpc.producer;
 /**
  * @author Jiang Yinzuo
  */
-public interface CreditDropService {
+public interface BwtonCreditService {
     /**
      * 用户绿色出行后，根据出行路程生成未成熟的积分小水滴
      *

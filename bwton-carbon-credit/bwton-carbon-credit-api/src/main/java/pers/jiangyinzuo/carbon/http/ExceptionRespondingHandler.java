@@ -31,9 +31,9 @@ public class ExceptionRespondingHandler {
     private static final ResponseEntity<Void> INCORRECT_METHOD = new ResponseEntity<>(HttpStatus.METHOD_NOT_ALLOWED);
     private static final ResponseEntity<Map<String, Object>> UNKNOWN_ERROR = new ResponseEntity<>(createBody("未知错误"), HttpStatus.INTERNAL_SERVER_ERROR);
 
-    @ExceptionHandler(BusinessException.class)
+    @ExceptionHandler(CustomRequestException.class)
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> handleCustomHttpException(BusinessException e) {
+    public ResponseEntity<Map<String, Object>> handleCustomHttpException(CustomRequestException e) {
         return new ResponseEntity<>(createBody(e.getErrMsg()), e.getStatusCode());
     }
 

@@ -4,8 +4,11 @@ import io.lettuce.core.ScoredValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
+import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
+import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
+import pers.jiangyinzuo.carbon.http.CustomRequestException;
 import pers.jiangyinzuo.carbon.service.CreditService;
 import pers.jiangyinzuo.carbon.service.FriendService;
 
@@ -28,7 +31,7 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    public LeaderBoardVO getLeaderBoard(Long userId, String mode) {
+    public LeaderBoardVO getLeaderBoard(Long userId, CREDIT_RECORD_MODE mode) {
 
         List<User> userList = friendService.getUserAndFriends(userId);
 
@@ -45,5 +48,24 @@ public class CreditServiceImpl implements CreditService {
     @Override
     public List<ScoredValue<String>> getCreditDrops(Long userId) {
         return creditCache.getCreditDrops(userId);
+    }
+
+    @Override
+    public Long getUserCredit(Long userId, CREDIT_RECORD_MODE mode) {
+        return creditCache.getUserCredit(userId, mode);
+    }
+
+    @Override
+    public boolean pickCreditDrop(CreditDrop creditDrop) throws CustomRequestException {
+
+        boolean hasDrop = creditCache.removeCreditDrop(creditDrop);
+
+        // 积分小水滴不存在
+        if (!hasDrop) {
+            return false;
+        }
+
+        creditCache.addCreditsAsync(creditDrop.getGainerUserId(), creditDrop.getValue());
+        return true;
     }
 }

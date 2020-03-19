@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pers.jiangyinzuo.carbon.http.BusinessException;
-import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
+import pers.jiangyinzuo.carbon.http.CustomRequestException;
+import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.service.AccountService;
 import pers.jiangyinzuo.carbon.service.TokenService;
 import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
@@ -38,12 +38,12 @@ public class AccountController {
      * 用户注册
      * @param userRegisterDTO 请求体
      * @return Http请求
-     * @throws BusinessException 业务逻辑错误
+     * @throws CustomRequestException 业务逻辑错误
      */
     @PostMapping("/register")
     public ResponseEntity<Object> register(
             @Validated @RequestBody UserRegisterDTO userRegisterDTO
-            ) throws BusinessException {
+            ) throws CustomRequestException {
         accountService.register(userRegisterDTO);
         return HttpResponse.OK;
     }
