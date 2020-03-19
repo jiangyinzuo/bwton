@@ -5,13 +5,13 @@ import org.springframework.http.HttpStatus;
 /**
  * @author Jiang Yinzuo
  */
-public class BusinessException extends Exception {
+public class CustomRequestException extends Exception {
 
     private final HttpStatus statusCode;
     private final String errMsg;
     private final int errCode;
 
-    public BusinessException(HttpStatus statusCode, String errMsg, int errCode) {
+    public CustomRequestException(HttpStatus statusCode, String errMsg, int errCode) {
         this.statusCode = statusCode;
         this.errMsg = errMsg;
         this.errCode = errCode;

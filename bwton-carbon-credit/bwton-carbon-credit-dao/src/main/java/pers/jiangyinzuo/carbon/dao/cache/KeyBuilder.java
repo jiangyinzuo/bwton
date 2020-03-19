@@ -8,7 +8,7 @@ package pers.jiangyinzuo.carbon.dao.cache;
 public class KeyBuilder {
     private static final String BWTON_USER = "bt:user:";
     private static final String CREDIT = ":credit:";
-    private static final String RECORD = ":record:";
+    private static final String RECORD = "record";
 
     private KeyBuilder() {}
 
@@ -16,8 +16,13 @@ public class KeyBuilder {
         return BWTON_USER + userId + CREDIT + span;
     }
 
-    public static String userCreditRecord(Long userId, int dayOfWeek) {
-        return BWTON_USER + userId + CREDIT + RECORD + dayOfWeek;
+    /**
+     * 用户被采摘碳积分小水滴记录的key
+     * @param collectedUserId 被采摘的用户ID
+     * @return key
+     */
+    public static String creditDropPickedRecord(Long collectedUserId) {
+        return BWTON_USER + collectedUserId + CREDIT + RECORD;
     }
 
     public static String userCreditDrops(Long userId) {

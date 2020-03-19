@@ -18,7 +18,7 @@ public class Application {
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.MINUTES.sleep(30);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 break;

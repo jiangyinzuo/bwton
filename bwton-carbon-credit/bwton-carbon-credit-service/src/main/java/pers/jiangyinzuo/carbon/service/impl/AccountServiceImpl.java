@@ -5,12 +5,12 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pers.jiangyinzuo.carbon.http.BusinessException;
-import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.common.security.EncryptUtil;
+import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
 import pers.jiangyinzuo.carbon.dao.mapper.UserMapper;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
+import pers.jiangyinzuo.carbon.http.CustomRequestException;
 import pers.jiangyinzuo.carbon.service.AccountService;
 
 
@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
     
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void register(UserRegisterDTO userRegisterDTO) throws BusinessException {
+    public void register(UserRegisterDTO userRegisterDTO) throws CustomRequestException {
         byte[] salt = SaltGenerator.getSalt32();
         String cipher = EncryptUtil.encryptPassword(userRegisterDTO.getPassword(), salt);
         try {
@@ -54,7 +54,7 @@ public class AccountServiceImpl implements AccountService {
             );
             userMapper.saveUserProps();
         } catch (DuplicateKeyException e) {
-            throw new BusinessException(HttpStatus.OK, "手机号已被注册", 1);
+            throw new CustomRequestException(HttpStatus.OK, "手机号已被注册", 1);
         }
     }
 }

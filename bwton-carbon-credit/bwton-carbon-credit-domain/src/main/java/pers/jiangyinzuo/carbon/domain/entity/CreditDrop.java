@@ -69,8 +69,13 @@ public class CreditDrop {
         value = Integer.parseInt(values[1]);
     }
 
+    public String getValueStr() {
+        return dropValue.split(".", 2)[1];
+    }
+
     /**
      * 判断小水滴是否已过期
+     *
      * @return 已过期返回true; 未过期返回false
      */
     public boolean isOutOfDate() {
@@ -78,10 +83,28 @@ public class CreditDrop {
     }
 
     /**
-     * 判断是不是帮自己摘小水滴
-     * @return 是: true; 否: false
+     * 判断是不是自己摘小水滴
+     *
+     * @return 是: true
      */
     public boolean isSelf() {
         return pickedUserId.equals(pickerUserId);
+    }
+
+    /**
+     * 判断是否被盗
+     *
+     * @return 是：true
+     */
+    public boolean isStolen() {
+        return pickerUserId.equals(gainerUserId) && !isSelf();
+    }
+
+    /**
+     * 存到Redis中的采摘记录
+     * @return 字符串
+     */
+    public String pickRecord() {
+        return pickerUserId + (isStolen() ? "-" : "+") + value;
     }
 }

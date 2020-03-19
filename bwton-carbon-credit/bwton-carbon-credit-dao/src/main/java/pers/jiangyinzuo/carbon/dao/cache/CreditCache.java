@@ -2,6 +2,8 @@ package pers.jiangyinzuo.carbon.dao.cache;
 
 import io.lettuce.core.RedisFuture;
 import io.lettuce.core.ScoredValue;
+import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
+import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,10 +19,18 @@ public interface CreditCache {
     /**
      * 查询多个用户的总碳积分
      * @param usersId 用户ID集合
-     * @param mode 时间间隔 total, week, remain
+     * @param mode 积分统计方式 total, week, remain
      * @return 用户碳积分列表（不按积分大小排序，同给定的用户ID集合顺序一致）
      */
-    List<Long> getUsersCredits(Collection<Long> usersId, String mode);
+    List<Long> getUsersCredits(Collection<Long> usersId, CREDIT_RECORD_MODE mode);
+
+    /**
+     * 获取用户碳积分
+     * @param userId 用户ID
+     * @param mode 积分统计方式 total, week, remain
+     * @return 用户碳积分
+     */
+    Long getUserCredit(Long userId, CREDIT_RECORD_MODE mode);
 
     /**
      * 获取好友碳积分被收取记录
@@ -30,15 +40,15 @@ public interface CreditCache {
     List<List<Integer>> getCreditCollectedRecord(Long friendId);
 
     /**
-     * 收取碳积分
+     * 增加碳积分：缓存中用户碳积分收集总量和本月数量增加，并添加碳积分收取记录
+     *
      * @param userId 用户ID
-     * @param collectedUserId 被收取的好友ID
-     * @param credit 收取的碳积分
+     * @param credit 增加的碳积分数值
      */
-    void pickCreditsAsync(Long userId, Long collectedUserId, Integer credit);
+    void addCreditsAsync(Long userId, Integer credit);
 
     /**
-     * 增加积分小水滴
+     * 添加积分小水滴
      * @param userId 用户ID
      * @param credit 小水滴数值
      * @param matureSpanMillis 水滴成熟时间间隔
@@ -54,11 +64,10 @@ public interface CreditCache {
 
     /**
      * 移除积分小水滴
-     * @param pickedUserId 被采摘者用户ID
-     * @param value        小水滴的value
+     * @param creditDrop 积分小水滴实体类
      * @return 1: 采摘成功; 0: 小水滴不存在;
      */
-    Long removeCreditDrop(Long pickedUserId, String value);
+    boolean removeCreditDrop(CreditDrop creditDrop);
 
     /**
      * 获取用户的积分小水滴
