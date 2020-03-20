@@ -1,0 +1,44 @@
+version: "3.7"
+services: 
+    bwton_redis:
+        network_mode: "host"
+        build:
+            network: host
+            context: .
+        image: redis
+        container_name: bwton_redis
+        volumes:
+            - /data/bwton/redis:/data
+    bwton_zookeeper:
+        network_mode: "host"
+        build:
+            network: host
+            context: .
+        image: zookeeper
+        container_name: bwton_zookeeper
+    bwton_mysql:
+        network_mode: "host"
+        build:
+            network: host
+            context: .
+        container_name: bwton_mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: "123456"
+        image: mysql
+        volumes: 
+            - /data/bwton/mysql/db:/var/lib/mysql
+            - /data/bwton/mysql/init:/docker-entrypoint-initdb.d/
+    webapp:
+        network_mode: "host"
+        build:
+            network: host
+            context: ./webapp
+        image: bwton_webapp:0.0.5
+        container_name: bwton_webapp
+        ports:
+            - 8089:8089
+        depends_on:
+            - bwton_redis
+            - bwton_mysql
+            - bwton_zookeeper
+
