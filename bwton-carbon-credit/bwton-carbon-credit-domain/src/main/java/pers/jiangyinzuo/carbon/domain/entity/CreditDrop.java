@@ -12,7 +12,7 @@ import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 public class CreditDrop {
 
     /**
-     * 每个积分小水滴成熟到过期的时间间隔
+     * 每个积分小水滴成熟到过期的时间间隔（24小时）
      */
     public static final long EXPIRE_SPAN = 24 * 3600 * 1000L;
     /**
@@ -42,6 +42,9 @@ public class CreditDrop {
     @ID
     private Long gainerUserId;
 
+    /**
+     * 保存在Redis中原始的积分小水滴值
+     */
     @DropValue
     private String dropValue;
 
@@ -51,7 +54,10 @@ public class CreditDrop {
     @JsonIgnore
     private Integer value;
 
-    public CreditDrop(Long pickerUserId, Long pickedUserId, String dropValue) {
+    private CreditDrop() {}
+
+    public CreditDrop(Long gainerUserId, Long pickerUserId, Long pickedUserId, String dropValue) {
+        this.gainerUserId = gainerUserId;
         this.pickerUserId = pickerUserId;
         this.pickedUserId = pickedUserId;
         this.dropValue = dropValue;
@@ -64,13 +70,9 @@ public class CreditDrop {
     }
 
     private void setValues() {
-        String[] values = dropValue.split(".", 2);
+        String[] values = dropValue.split("\\.", 2);
         matureTime = Long.parseLong(values[0]);
         value = Integer.parseInt(values[1]);
-    }
-
-    public String getValueStr() {
-        return dropValue.split(".", 2)[1];
     }
 
     /**

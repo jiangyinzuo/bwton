@@ -3,6 +3,7 @@ package pers.jiangyinzuo.carbon.service;
 import io.lettuce.core.ScoredValue;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
 import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
+import pers.jiangyinzuo.carbon.domain.entity.PickedRecord;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.http.CustomRequestException;
 
@@ -43,4 +44,6 @@ public interface CreditService {
      * @throws CustomRequestException 非法请求
      */
     boolean pickCreditDrop(CreditDrop creditDrop) throws CustomRequestException;
+
+    List<PickedRecord> getPickedRecord(Long userId);
 }

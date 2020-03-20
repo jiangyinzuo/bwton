@@ -11,7 +11,6 @@ import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.http.CustomRequestException;
 import pers.jiangyinzuo.carbon.http.HttpResponse;
-import pers.jiangyinzuo.carbon.rpc.producer.BwtonCreditService;
 import pers.jiangyinzuo.carbon.service.CreditService;
 import pers.jiangyinzuo.carbon.service.FriendService;
 import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
@@ -28,17 +27,16 @@ public class CreditController {
 
     private CreditService creditService;
     private FriendService friendService;
-    private BwtonCreditService bwtonCreditService;
 
     @Autowired
-    public void setLeaderBoardService(CreditService creditService, FriendService friendService, BwtonCreditService bwtonCreditService) {
+    public void setLeaderBoardService(CreditService creditService, FriendService friendService) {
         this.creditService = creditService;
         this.friendService = friendService;
-        this.bwtonCreditService = bwtonCreditService;
     }
 
     /**
      * 获取好友排行榜
+     *
      * @param authToken
      * @param userId
      * @param mode
@@ -100,12 +98,28 @@ public class CreditController {
         }
 
         if (creditDrop.isSelf() || friendService.isFriend(creditDrop.getPickedUserId(), creditDrop.getPickerUserId())) {
-            if(creditService.pickCreditDrop(creditDrop)) {
+            if (creditService.pickCreditDrop(creditDrop)) {
                 return HttpResponse.ok(creditDrop.isSelf() ? "采摘成功" : "帮助成功");
             }
             return HttpResponse.ok("小水滴消失了");
         } else { // 既不是自己也不是好友, 权限不够
             return HttpResponse.FORBIDDEN;
         }
+    }
+
+    /**
+     * 获取用户被采摘碳积分的记录
+     *
+     * @param authToken 用户验证Token
+     * @param userId    用户ID
+     * @return
+     */
+    @GetMapping("/creditDrop/record")
+    public ResponseEntity<Object> getPickedRecord(
+            @RequestHeader("Authorization") String authToken,
+            @Validated @ID @RequestParam Long userId) {
+        // TODO
+        creditService.getPickedRecord(userId);
+        return HttpResponse.OK;
     }
 }

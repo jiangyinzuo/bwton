@@ -34,10 +34,10 @@ public interface CreditCache {
 
     /**
      * 获取好友碳积分被收取记录
-     * @param friendId 好友ID
+     * @param userId 用户ID
      * @return 收取列表, 负数表示用户收取、正数表示好友收取
      */
-    List<List<Integer>> getCreditCollectedRecord(Long friendId);
+    List<List<Integer>> getPickedRecord(Long userId);
 
     /**
      * 增加碳积分：缓存中用户碳积分收集总量和本月数量增加，并添加碳积分收取记录

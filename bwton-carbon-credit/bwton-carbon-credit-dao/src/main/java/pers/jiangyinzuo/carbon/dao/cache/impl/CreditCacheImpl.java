@@ -63,10 +63,10 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public List<List<Integer>> getCreditCollectedRecord(Long friendId) {
+    public List<List<Integer>> getPickedRecord(Long userId) {
         List<RedisFuture<List<String>>> futures = new ArrayList<>(7);
         for (int i = 1; i <= 7; ++i) {
-            futures.add(cmdAsync.lrange(creditDropPickedRecord(friendId), 0, -1));
+            futures.add(cmdAsync.lrange(creditDropPickedRecord(userId), 0, -1));
         }
         List<List<Integer>> collectedRecords = new ArrayList<>(7);
 

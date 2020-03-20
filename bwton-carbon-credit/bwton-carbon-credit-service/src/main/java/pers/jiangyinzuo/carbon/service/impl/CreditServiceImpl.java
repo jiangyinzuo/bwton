@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
 import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
+import pers.jiangyinzuo.carbon.domain.entity.PickedRecord;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.http.CustomRequestException;
@@ -67,5 +68,10 @@ public class CreditServiceImpl implements CreditService {
 
         creditCache.addCreditsAsync(creditDrop.getGainerUserId(), creditDrop.getValue());
         return true;
+    }
+
+    @Override
+    public List<PickedRecord> getPickedRecord(Long userId) {
+        return null;
     }
 }
