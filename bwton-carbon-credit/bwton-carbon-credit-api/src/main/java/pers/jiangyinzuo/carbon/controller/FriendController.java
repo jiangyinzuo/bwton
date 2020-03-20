@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.domain.dto.FriendshipDTO;
+import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.service.FriendService;
 import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
 
@@ -38,7 +38,11 @@ public class FriendController {
         if (!friendshipDTO.isValid()) {
             return HttpResponse.badRequest("不能加自己为好友");
         }
-        friendService.addFriend(friendshipDTO);
-        return HttpResponse.OK;
+
+        if (friendService.addFriend(friendshipDTO)) {
+            return HttpResponse.OK;
+        } else {
+            return HttpResponse.badRequest("该用户不存在");
+        }
     }
 }

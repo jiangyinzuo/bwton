@@ -1,9 +1,8 @@
 package pers.jiangyinzuo.carbon.dao.cache;
 
 import io.lettuce.core.RedisFuture;
-import io.lettuce.core.ScoredValue;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
-import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
+import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,9 +34,9 @@ public interface CreditCache {
     /**
      * 获取好友碳积分被收取记录
      * @param userId 用户ID
-     * @return 收取列表, 负数表示用户收取、正数表示好友收取
+     * @return 收取列表，Redis列表值的原始数据
      */
-    List<List<Integer>> getPickedRecord(Long userId);
+    List<String> getRawPickedRecord(Long userId);
 
     /**
      * 增加碳积分：缓存中用户碳积分收集总量和本月数量增加，并添加碳积分收取记录
@@ -64,15 +63,17 @@ public interface CreditCache {
 
     /**
      * 移除积分小水滴
-     * @param creditDrop 积分小水滴实体类
+     * @param pickCreditDropDTO 积分小水滴实体类
      * @return 1: 采摘成功; 0: 小水滴不存在;
      */
-    boolean removeCreditDrop(CreditDrop creditDrop);
+    boolean removeCreditDrop(PickCreditDropDTO pickCreditDropDTO);
 
     /**
      * 获取用户的积分小水滴
      * @param userId 用户ID
      * @return 积分小水滴列表
      */
-    List<ScoredValue<String>> getCreditDrops(Long userId);
+    List<String> getCreditDrops(Long userId);
+
+    void addPickedRecordAsync(PickCreditDropDTO pickCreditDropDTO);
 }

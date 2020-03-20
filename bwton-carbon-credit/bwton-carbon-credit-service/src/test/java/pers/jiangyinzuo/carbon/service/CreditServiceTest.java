@@ -1,13 +1,11 @@
 package pers.jiangyinzuo.carbon.service;
 
-import io.lettuce.core.ScoredValue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
-import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
-import pers.jiangyinzuo.carbon.http.CustomRequestException;
+import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,22 +42,17 @@ public class CreditServiceTest {
 
         // 找到刚添加的积分小水滴
         String lastDropValue = null;
-        for (ScoredValue<String> drop : drops) {
-            if (drop.getValue().contains(".12")) {
-                lastDropValue = drop.getValue();
+        for (String drop : drops) {
+            if (drop.contains(".12")) {
+                lastDropValue = drop;
             }
         }
 
         assertNotNull(lastDropValue);
 
-        CreditDrop creditDrop = new CreditDrop(pickerUserId, pickerUserId, pickedUserId, lastDropValue);
+        PickCreditDropDTO pickCreditDropDTO = new PickCreditDropDTO(pickerUserId, pickerUserId, pickedUserId, lastDropValue);
 
-        boolean isPicked = false;
-        try {
-           isPicked = creditService.pickCreditDrop(creditDrop);
-        } catch (CustomRequestException e) {
-            e.printStackTrace();
-        }
+        boolean isPicked = creditService.pickCreditDrop(pickCreditDropDTO);
 
         // 断言积分小水滴采摘成功
         assertTrue(isPicked);

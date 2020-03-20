@@ -1,20 +1,20 @@
 package pers.jiangyinzuo.carbon.service.impl;
 
-import io.lettuce.core.ScoredValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
-import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
-import pers.jiangyinzuo.carbon.domain.entity.PickedRecord;
+import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 import pers.jiangyinzuo.carbon.domain.entity.User;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
-import pers.jiangyinzuo.carbon.http.CustomRequestException;
+import pers.jiangyinzuo.carbon.domain.vo.PickedRecordVO;
 import pers.jiangyinzuo.carbon.service.CreditService;
 import pers.jiangyinzuo.carbon.service.FriendService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static pers.jiangyinzuo.carbon.domain.vo.PickedRecordVO.createRecords;
 
 /**
  * @author Jiang Yinzuo
@@ -47,7 +47,7 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    public List<ScoredValue<String>> getCreditDrops(Long userId) {
+    public List<String> getCreditDrops(Long userId) {
         return creditCache.getCreditDrops(userId);
     }
 
@@ -57,21 +57,25 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    public boolean pickCreditDrop(CreditDrop creditDrop) throws CustomRequestException {
+    public boolean pickCreditDrop(PickCreditDropDTO pickCreditDropDTO) {
 
-        boolean hasDrop = creditCache.removeCreditDrop(creditDrop);
+        boolean hasDrop = creditCache.removeCreditDrop(pickCreditDropDTO);
 
         // 积分小水滴不存在
         if (!hasDrop) {
             return false;
         }
 
-        creditCache.addCreditsAsync(creditDrop.getGainerUserId(), creditDrop.getValue());
+        creditCache.addCreditsAsync(pickCreditDropDTO.getGainerUserId(), pickCreditDropDTO.getValue());
         return true;
     }
 
     @Override
-    public List<PickedRecord> getPickedRecord(Long userId) {
-        return null;
+    public List<PickedRecordVO> getPickedRecord(Long queriedUserId) {
+
+        // Redis中的原始数据
+        // 每条记录格式为 `{采摘用户ID}["+", "-"]{碳积分数值}`
+        List<String> rawResult = creditCache.getRawPickedRecord(queriedUserId);
+        return createRecords(queriedUserId, rawResult);
     }
 }

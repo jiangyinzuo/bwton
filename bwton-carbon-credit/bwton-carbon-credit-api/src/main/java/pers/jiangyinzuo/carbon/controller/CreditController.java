@@ -1,14 +1,14 @@
 package pers.jiangyinzuo.carbon.controller;
 
-import io.lettuce.core.ScoredValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
-import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
+import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
+import pers.jiangyinzuo.carbon.domain.vo.PickedRecordVO;
 import pers.jiangyinzuo.carbon.http.CustomRequestException;
 import pers.jiangyinzuo.carbon.http.HttpResponse;
 import pers.jiangyinzuo.carbon.service.CreditService;
@@ -72,6 +72,7 @@ public class CreditController {
     public ResponseEntity<Object> getCreditDrop(
             @RequestHeader("Authorization") String authToken,
             @Validated @ID @RequestParam Long userId) {
+
         Long uid = HttpHeaderUtil.getUserId(authToken);
 
         // 该用户既不是小水滴本人也不是好友，没有查看权限
@@ -79,7 +80,7 @@ public class CreditController {
             return HttpResponse.FORBIDDEN;
         }
 
-        List<ScoredValue<String>> drops = creditService.getCreditDrops(userId);
+        List<String> drops = creditService.getCreditDrops(userId);
         Map<String, Object> data = new HashMap<>(1);
         data.put("drops", drops);
         return HttpResponse.ok(data);
@@ -88,18 +89,18 @@ public class CreditController {
     /**
      * 采摘积分小水滴
      *
-     * @param creditDrop
+     * @param pickCreditDropDTO
      * @return
      */
     @PostMapping("/creditDrop")
-    public ResponseEntity<Object> pickCreditDrop(@Validated @RequestBody CreditDrop creditDrop) throws CustomRequestException {
-        if (creditDrop.isOutOfDate()) {
+    public ResponseEntity<Object> pickCreditDrop(@Validated @RequestBody PickCreditDropDTO pickCreditDropDTO) throws CustomRequestException {
+        if (pickCreditDropDTO.isOutOfDate()) {
             return HttpResponse.badRequest("小水滴已过期");
         }
 
-        if (creditDrop.isSelf() || friendService.isFriend(creditDrop.getPickedUserId(), creditDrop.getPickerUserId())) {
-            if (creditService.pickCreditDrop(creditDrop)) {
-                return HttpResponse.ok(creditDrop.isSelf() ? "采摘成功" : "帮助成功");
+        if (pickCreditDropDTO.isSelf() || friendService.isFriend(pickCreditDropDTO.getPickedUserId(), pickCreditDropDTO.getPickerUserId())) {
+            if (creditService.pickCreditDrop(pickCreditDropDTO)) {
+                return HttpResponse.ok(pickCreditDropDTO.isSelf() ? "采摘成功" : "帮助成功");
             }
             return HttpResponse.ok("小水滴消失了");
         } else { // 既不是自己也不是好友, 权限不够
@@ -111,15 +112,22 @@ public class CreditController {
      * 获取用户被采摘碳积分的记录
      *
      * @param authToken 用户验证Token
-     * @param userId    用户ID
+     * @param queriedUserId    用户ID
      * @return
      */
     @GetMapping("/creditDrop/record")
     public ResponseEntity<Object> getPickedRecord(
             @RequestHeader("Authorization") String authToken,
-            @Validated @ID @RequestParam Long userId) {
-        // TODO
-        creditService.getPickedRecord(userId);
-        return HttpResponse.OK;
+            @Validated @ID @RequestParam Long queriedUserId) {
+
+        Long userId = HttpHeaderUtil.getUserId(authToken);
+
+        // 该用户既不是小水滴本人也不是好友，没有查看权限
+        if (!(userId.equals(queriedUserId) || friendService.isFriend(userId, queriedUserId))) {
+            return HttpResponse.FORBIDDEN;
+        }
+
+        List<PickedRecordVO> pickedRecord = creditService.getPickedRecord(queriedUserId);
+        return HttpResponse.ok(pickedRecord);
     }
 }

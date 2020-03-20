@@ -3,7 +3,7 @@ package pers.jiangyinzuo.carbon.service.rpc.producer.impl;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
-import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
+import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 import pers.jiangyinzuo.carbon.rpc.producer.BwtonCreditService;
 
 import java.util.Random;
@@ -41,9 +41,9 @@ public class BwtonCreditServiceImpl implements BwtonCreditService {
 
     @Override
     public void addCreditDrop(Long userId, Double distance) {
-        if (creditCache.getCreditDropsSize(userId) <= CreditDrop.MAXIMUM_CREDIT_DROP_COUNT) {
+        if (creditCache.getCreditDropsSize(userId) <= PickCreditDropDTO.MAXIMUM_CREDIT_DROP_COUNT) {
             long credit = calcCreditValue(distance);
-            creditCache.addCreditDropAsync(userId, credit, CreditDrop.MATURE_SPAN_MILLIS);
+            creditCache.addCreditDropAsync(userId, credit, PickCreditDropDTO.MATURE_SPAN_MILLIS);
         }
     }
 }

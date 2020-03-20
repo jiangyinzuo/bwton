@@ -3,13 +3,12 @@ package pers.jiangyinzuo.carbon.dao.cache.impl;
 import io.lettuce.core.LettuceFutures;
 import io.lettuce.core.Range;
 import io.lettuce.core.RedisFuture;
-import io.lettuce.core.ScoredValue;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.BaseCache;
 import pers.jiangyinzuo.carbon.dao.cache.CreditCache;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
-import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
+import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +31,11 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
      * 一周的时间间隔，单位毫秒
      */
     private static final long A_WEEK = 7 * 24 * 3600 * 1000L;
+
+    /**
+     * 碳积分收取记录保留条数
+     */
+    private static final long RECORDS_KEEP_COUNT = 7;
 
     @Override
     public List<Long> getUsersCredits(Collection<Long> usersId, CREDIT_RECORD_MODE mode) {
@@ -63,28 +67,8 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public List<List<Integer>> getPickedRecord(Long userId) {
-        List<RedisFuture<List<String>>> futures = new ArrayList<>(7);
-        for (int i = 1; i <= 7; ++i) {
-            futures.add(cmdAsync.lrange(creditDropPickedRecord(userId), 0, -1));
-        }
-        List<List<Integer>> collectedRecords = new ArrayList<>(7);
-
-        LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futures.toArray(new RedisFuture[0]));
-        int i = 0;
-        for (var future : futures) {
-            List<Integer> record = new ArrayList<>(7);
-            try {
-                List<String> recordStr = future.get();
-                for (var str : recordStr) {
-                    record.add(Integer.parseInt(str));
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                Thread.currentThread().interrupt();
-            }
-            collectedRecords.set(i++, record);
-        }
-        return collectedRecords;
+    public List<String> getRawPickedRecord(Long userId) {
+        return cmdSync.lrange(creditDropPickedRecord(userId), 0, RECORDS_KEEP_COUNT - 1);
     }
 
     @Override
@@ -106,17 +90,17 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
         RedisFuture<Long> future = cmdAsync.zadd(key, matureTimestamp.doubleValue(), getCreditDropValue(matureTimestamp, credit));
 
         // 为整个key设置过期时间
-        cmdAsync.pexpire(key, matureSpanMillis + CreditDrop.EXPIRE_SPAN);
+        cmdAsync.pexpire(key, matureSpanMillis + PickCreditDropDTO.EXPIRE_SPAN);
 
         // 移除已经过期的积分小水滴
-        cmdAsync.zremrangebyscore(key, Range.create(0, System.currentTimeMillis() - CreditDrop.EXPIRE_SPAN));
+        cmdAsync.zremrangebyscore(key, Range.create(0, System.currentTimeMillis() - PickCreditDropDTO.EXPIRE_SPAN));
 
         return future;
     }
 
     @Override
     public long getCreditDropsSize(Long userId) {
-        return cmdSync.zcount(userCreditDrops(userId), Range.create(System.currentTimeMillis() - CreditDrop.EXPIRE_SPAN, Long.MAX_VALUE));
+        return cmdSync.zcount(userCreditDrops(userId), Range.create(System.currentTimeMillis() - PickCreditDropDTO.EXPIRE_SPAN, Long.MAX_VALUE));
     }
 
     /**
@@ -129,25 +113,31 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     @Override
-    public boolean removeCreditDrop(CreditDrop creditDrop) {
-        long removedCount = cmdSync.zrem(userCreditDrops(creditDrop.getPickedUserId()), creditDrop.getDropValue());
+    public boolean removeCreditDrop(PickCreditDropDTO pickCreditDropDTO) {
+        long removedCount = cmdSync.zrem(userCreditDrops(pickCreditDropDTO.getPickedUserId()), pickCreditDropDTO.getDropValue());
 
         // 该积分小水滴不存在
         if (removedCount == 0) {
             return false;
         }
-        String dropPickedRecordKey = creditDropPickedRecord(creditDrop.getPickedUserId());
-
-        // 每次仅保留最新的7条记录
-        cmdAsync.lpush(dropPickedRecordKey, creditDrop.pickRecord()).thenRun(() -> cmdAsync.ltrim(dropPickedRecordKey, 0, 6));
+        addPickedRecordAsync(pickCreditDropDTO);
         return true;
     }
 
     @Override
-    public List<ScoredValue<String>> getCreditDrops(Long userId) {
+    public List<String> getCreditDrops(Long userId) {
 
         // 积分小水滴的最小未过期时间戳
-        long minUnexpiredTimestamp = System.currentTimeMillis() - CreditDrop.EXPIRE_SPAN;
-        return cmdSync.zrangebyscoreWithScores(userCreditDrops(userId), Range.create(minUnexpiredTimestamp, Long.MAX_VALUE));
+        long minUnexpiredTimestamp = System.currentTimeMillis() - PickCreditDropDTO.EXPIRE_SPAN;
+        return cmdSync.zrangebyscore(userCreditDrops(userId), Range.create(minUnexpiredTimestamp, Long.MAX_VALUE));
+    }
+
+    @Override
+    public void addPickedRecordAsync(PickCreditDropDTO pickCreditDropDTO) {
+        String dropPickedRecordKey = creditDropPickedRecord(pickCreditDropDTO.getPickedUserId());
+
+        // 每次仅保留最新的7条记录
+        cmdAsync.lpush(dropPickedRecordKey, pickCreditDropDTO.pickRecord()).thenRun(() -> cmdAsync.ltrim(dropPickedRecordKey, 0, RECORDS_KEEP_COUNT - 1));
+
     }
 }

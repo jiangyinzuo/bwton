@@ -1,11 +1,9 @@
 package pers.jiangyinzuo.carbon.service;
 
-import io.lettuce.core.ScoredValue;
 import pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE;
-import pers.jiangyinzuo.carbon.domain.entity.CreditDrop;
-import pers.jiangyinzuo.carbon.domain.entity.PickedRecord;
+import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
-import pers.jiangyinzuo.carbon.http.CustomRequestException;
+import pers.jiangyinzuo.carbon.domain.vo.PickedRecordVO;
 
 import java.util.List;
 
@@ -27,7 +25,7 @@ public interface CreditService {
      * @param userId userId
      * @return 小水滴列表, 每个字符串由{UNIX时间戳}.{水滴数值}组成
      */
-    List<ScoredValue<String>> getCreditDrops(Long userId);
+    List<String> getCreditDrops(Long userId);
 
     /**
      * 获取用户的碳积分
@@ -39,11 +37,15 @@ public interface CreditService {
 
     /**
      * 采摘碳积分
-     * @param creditDrop 碳积分小水滴实体类
+     * @param pickCreditDropDTO 碳积分小水滴实体类
      * @return 是否采摘成功
-     * @throws CustomRequestException 非法请求
      */
-    boolean pickCreditDrop(CreditDrop creditDrop) throws CustomRequestException;
+    boolean pickCreditDrop(PickCreditDropDTO pickCreditDropDTO);
 
-    List<PickedRecord> getPickedRecord(Long userId);
+    /**
+     * 获取用户被采摘碳积分的最近7条记录
+     * @param queriedUserId 被查询者ID
+     * @return
+     */
+    List<PickedRecordVO> getPickedRecord(Long queriedUserId);
 }

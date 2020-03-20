@@ -1,15 +1,18 @@
-package pers.jiangyinzuo.carbon.domain.entity;
+package pers.jiangyinzuo.carbon.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.DropValue;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 
+import static pers.jiangyinzuo.carbon.common.DateUtil.getCurrentYearMonthDay;
+
 /**
  * @author Jiang Yinzuo
+ * @see pers.jiangyinzuo.carbon.domain.vo.PickedRecordVO
  */
 @Data
-public class CreditDrop {
+public class PickCreditDropDTO {
 
     /**
      * 每个积分小水滴成熟到过期的时间间隔（24小时）
@@ -23,6 +26,13 @@ public class CreditDrop {
      * 一个用户最多拥有的积分小水滴数量
      */
     public static final long MAXIMUM_CREDIT_DROP_COUNT = 10;
+
+    /**
+     * Redis记录中增加碳积分和减少碳积分的分隔符
+     * 由于和日期格式中的‘-’冲突，减少碳积分分隔符使用‘_’
+     */
+    public static final String ADD_REC = "+";
+    public static final String SUB_REC = "_";
 
     /**
      * 采摘积分小水滴的用户ID
@@ -54,9 +64,9 @@ public class CreditDrop {
     @JsonIgnore
     private Integer value;
 
-    private CreditDrop() {}
+    private PickCreditDropDTO() {}
 
-    public CreditDrop(Long gainerUserId, Long pickerUserId, Long pickedUserId, String dropValue) {
+    public PickCreditDropDTO(Long gainerUserId, Long pickerUserId, Long pickedUserId, String dropValue) {
         this.gainerUserId = gainerUserId;
         this.pickerUserId = pickerUserId;
         this.pickedUserId = pickedUserId;
@@ -107,6 +117,7 @@ public class CreditDrop {
      * @return 字符串
      */
     public String pickRecord() {
-        return pickerUserId + (isStolen() ? "-" : "+") + value;
+        final String delimiter = isStolen() ? SUB_REC : ADD_REC;
+        return pickerUserId + delimiter + value + delimiter + getCurrentYearMonthDay();
     }
 }

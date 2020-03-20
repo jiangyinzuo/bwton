@@ -12,8 +12,9 @@ public interface FriendService {
     /**
      * 加好友
      * @param friendshipDTO 好友关系业务对象
+     * @return
      */
-    void addFriend(FriendshipDTO friendshipDTO);
+    boolean addFriend(FriendshipDTO friendshipDTO);
 
     /**
      * 获取碳积分排行榜上的用户
