@@ -120,21 +120,6 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
     }
 
     /**
-     *
-     * @param matureTimestamp 小水滴成熟的时间戳
-     * @param credit 小水滴积分值
-     * @return 积分小水滴保存在redis有序列表中的value
-     */
-    private String getCreditDropValue(Long matureTimestamp, Long credit) {
-        return matureTimestamp + "." + credit;
-    }
-
-    @Override
-    public long getCreditDropsSize(Long userId) {
-        return cmdSync.zcount(userCreditDrops(userId), Range.create(System.currentTimeMillis() - CreditDrop.EXPIRE_SPAN, Long.MAX_VALUE));
-    }
-
-    /**
      * @param matureTimestamp 小水滴成熟的时间戳
      * @param credit          小水滴积分值
      * @return 积分小水滴保存在redis有序列表中的value
