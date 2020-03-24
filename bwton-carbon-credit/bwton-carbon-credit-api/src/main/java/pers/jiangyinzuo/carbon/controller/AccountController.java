@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
 import pers.jiangyinzuo.carbon.http.CustomRequestException;
-import pers.jiangyinzuo.carbon.http.HttpResponse;
+import pers.jiangyinzuo.carbon.http.HttpResponseUtil;
 import pers.jiangyinzuo.carbon.service.AccountService;
 import pers.jiangyinzuo.carbon.service.TokenService;
 import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
@@ -45,7 +45,7 @@ public class AccountController {
             @Validated @RequestBody UserRegisterDTO userRegisterDTO
             ) throws CustomRequestException {
         accountService.register(userRegisterDTO);
-        return HttpResponse.OK;
+        return HttpResponseUtil.OK;
     }
 
     /**
@@ -62,10 +62,10 @@ public class AccountController {
             Map<String, Object> data = new HashMap<>(1);
             data.put("token", tokenService.genBase64Token(userId.toString()));
             data.put("userId", userId);
-            return HttpResponse.ok(data);
+            return HttpResponseUtil.ok(data);
         } else {
             String errMsg = userId == AccountService.PASSWORD_ERROR ? "密码错误" : "账号不存在";
-            return HttpResponse.ok(1, errMsg);
+            return HttpResponseUtil.ok(1, errMsg);
         }
     }
 
@@ -82,6 +82,6 @@ public class AccountController {
         Map<String, Object> data = new HashMap<>(1);
         data.put("token", newBase64Token);
         data.put("userId", userId);
-        return HttpResponse.ok(data);
+        return HttpResponseUtil.ok(data);
     }
 }

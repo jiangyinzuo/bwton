@@ -7,7 +7,7 @@ import pers.jiangyinzuo.carbon.domain.entity.QuestProgress;
 
 import java.util.Map;
 
-import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userQuestProgress;
+import static pers.jiangyinzuo.carbon.dao.cache.RedisKeyBuilder.userQuestProgress;
 
 /**
  * @author Jiang Yinzuo

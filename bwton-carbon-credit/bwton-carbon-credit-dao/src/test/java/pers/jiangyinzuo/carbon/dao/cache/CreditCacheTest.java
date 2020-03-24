@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userCreditDrops;
-
+import static pers.jiangyinzuo.carbon.dao.cache.RedisKeyBuilder.userCreditDrops;
 import static pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE.REMAIN;
 import static pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE.TOTAL;
 

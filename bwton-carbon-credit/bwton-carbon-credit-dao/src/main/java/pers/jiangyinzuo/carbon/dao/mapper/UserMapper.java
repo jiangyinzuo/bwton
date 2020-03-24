@@ -28,11 +28,6 @@ public interface UserMapper {
     void saveUserAccount(String nickname, String cipher, byte[] salt, String telephone);
 
     /**
-     * 添加用户道具
-     */
-    void saveUserProps();
-
-    /**
      * 查询一个用户是否存在
      * @param userId 用户ID
      * @return 存在: true; 不存在: false

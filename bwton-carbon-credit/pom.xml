@@ -15,6 +15,7 @@
         <module>bwton-carbon-credit-service</module>
         <module>bwton-carbon-credit-mq</module>
         <module>bwton-carbon-credit-remote-api</module>
+        <module>bwton-carbon-credit-schedule</module>
     </modules>
 
     <name>bwton-carbon-credit</name>

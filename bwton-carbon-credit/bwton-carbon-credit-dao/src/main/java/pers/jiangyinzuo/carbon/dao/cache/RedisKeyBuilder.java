@@ -5,12 +5,13 @@ package pers.jiangyinzuo.carbon.dao.cache;
  *
  * @author Jiang Yinzuo
  */
-public class KeyBuilder {
+public class RedisKeyBuilder {
     private static final String BWTON_USER = "bt:user:";
     private static final String CREDIT = ":credit:";
     private static final String RECORD = "record";
+    private static final String SIGN_IN = ":signin:";
 
-    private KeyBuilder() {}
+    private RedisKeyBuilder() {}
 
     public static String userCredit(Long userId, String span) {
         return BWTON_USER + userId + CREDIT + span;
@@ -35,5 +36,21 @@ public class KeyBuilder {
 
     public static String userSignatureKey(String userId) {
         return BWTON_USER + userId + ":sk";
+    }
+
+    public static String userSignInCalendar(Long userId) {
+        return BWTON_USER + userId + SIGN_IN + "calendar";
+    }
+
+    public static String userSignInRe(Long userId) {
+        return BWTON_USER + userId + SIGN_IN + "re";
+    }
+
+    public static String userSignInContinue(Long userId) {
+        return BWTON_USER + userId + SIGN_IN + "continue";
+    }
+
+    public static String userSignInLast(Long userId) {
+        return BWTON_USER + userId + SIGN_IN + "last";
     }
 }

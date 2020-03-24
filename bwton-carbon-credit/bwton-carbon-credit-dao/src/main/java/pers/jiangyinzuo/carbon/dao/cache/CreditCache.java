@@ -75,5 +75,9 @@ public interface CreditCache {
      */
     List<String> getCreditDrops(Long userId);
 
+    /**
+     * 添加采摘积分小水滴记录
+     * @param pickCreditDropDTO
+     */
     void addPickedRecordAsync(PickCreditDropDTO pickCreditDropDTO);
 }

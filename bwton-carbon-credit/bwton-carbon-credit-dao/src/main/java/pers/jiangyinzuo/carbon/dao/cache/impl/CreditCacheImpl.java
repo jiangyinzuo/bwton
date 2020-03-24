@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import static pers.jiangyinzuo.carbon.common.TimeUtil.getBeginOfThisWeekTimestamp;
-import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.*;
+import static pers.jiangyinzuo.carbon.dao.cache.RedisKeyBuilder.*;
 
 /**
  * @author Jiang Yinzuo

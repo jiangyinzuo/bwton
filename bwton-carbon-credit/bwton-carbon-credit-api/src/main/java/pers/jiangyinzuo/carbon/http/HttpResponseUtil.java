@@ -5,13 +5,13 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static pers.jiangyinzuo.carbon.http.HttpResponse.HttpResponseBody.*;
+import static pers.jiangyinzuo.carbon.http.HttpResponseUtil.HttpResponseBody.*;
 
 /**
  * 自定义HTTP response类
  * @author Jiang Yinzuo
  */
-public class HttpResponse {
+public class HttpResponseUtil {
 
     /**
      * 不带data的200状态码http response
@@ -28,7 +28,7 @@ public class HttpResponse {
      */
     public static final ResponseEntity<Object> NOT_FOUND = ResponseEntity.notFound().build();
 
-    private HttpResponse() {
+    private HttpResponseUtil() {
     }
 
     public static ResponseEntity<Object> ok(int errCode, String errMsg) {

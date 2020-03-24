@@ -5,7 +5,7 @@ import lombok.Data;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.DropValue;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 
-import static pers.jiangyinzuo.carbon.common.DateUtil.getCurrentYearMonthDay;
+import static pers.jiangyinzuo.carbon.common.DateUtil.getDefaultLocalDateNow;
 
 /**
  * @author Jiang Yinzuo
@@ -118,6 +118,6 @@ public class PickCreditDropDTO {
      */
     public String pickRecord() {
         final String delimiter = isStolen() ? SUB_REC : ADD_REC;
-        return pickerUserId + delimiter + value + delimiter + getCurrentYearMonthDay();
+        return pickerUserId + delimiter + value + delimiter + getDefaultLocalDateNow();
     }
 }

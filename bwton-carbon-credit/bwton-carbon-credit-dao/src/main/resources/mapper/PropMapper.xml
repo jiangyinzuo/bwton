@@ -3,12 +3,39 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="pers.jiangyinzuo.carbon.dao.mapper.PropMapper">
-  <select id="getProps" resultType="pers.jiangyinzuo.carbon.domain.entity.UserProps">
-      SELECT
-          speeder, cover, lottery, reissue_card
-      FROM
-          bwton_user_prop
-      WHERE
-          user_id = #{userId}
-  </select>
+    <update id="decrPropsCount">
+        UPDATE
+            bwton_user_prop_relation
+        SET prop_count = prop_count - #{decr}
+        WHERE user_id = #{userId}
+          AND prop_id = #{propId}
+    </update>
+    <select id="getProps" resultType="pers.jiangyinzuo.carbon.domain.entity.Prop">
+        SELECT bwton_user_prop_relation.prop_id,
+               prop_name,
+               prop_count
+        FROM bwton_prop_dict,
+             bwton_user_prop_relation
+        WHERE user_id = #{userId}
+          AND bwton_user_prop_relation.prop_id = bwton_prop_dict.prop_id
+    </select>
+    <select id="getPropById" parameterType="Long" resultType="pers.jiangyinzuo.carbon.domain.entity.Prop">
+        SELECT bwton_user_prop_relation.prop_id,
+               prop_name,
+               prop_count
+        FROM bwton_prop_dict,
+             bwton_user_prop_relation
+        WHERE user_id = #{userId}
+          AND bwton_user_prop_relation.prop_id = bwton_prop_dict.prop_id
+          AND bwton_prop_dict.prop_id = #{propId}
+
+    </select>
+    <insert id="addPropsCount">
+        <foreach collection="props" item="prop" separator=",">
+            INSERT INTO bwton_user_prop_relation(user_id, prop_id, prop_count)
+            VALUES (#{userId}, #{prop.propId}, #{prop.propCount})
+            ON DUPLICATE KEY
+            UPDATE prop_count = prop_count + #{prop.propCount}
+        </foreach>
+    </insert>
 </mapper>

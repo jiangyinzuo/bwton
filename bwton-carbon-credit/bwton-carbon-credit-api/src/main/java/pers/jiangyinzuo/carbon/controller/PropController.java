@@ -6,10 +6,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pers.jiangyinzuo.carbon.domain.entity.UserProps;
+import pers.jiangyinzuo.carbon.domain.entity.Prop;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
-import pers.jiangyinzuo.carbon.http.HttpResponse;
+import pers.jiangyinzuo.carbon.http.HttpResponseUtil;
 import pers.jiangyinzuo.carbon.service.PropService;
+
+import java.util.List;
 
 /**
  * @author Jiang Yinzuo
@@ -26,7 +28,7 @@ public class PropController {
 
     @GetMapping("/prop")
     public ResponseEntity<Object> getProps(@Validated @RequestParam @ID Long userId) {
-        UserProps userProps = propService.getProps(userId);
-        return HttpResponse.ok(userProps);
+        List<Prop> props =  propService.getProps(userId);
+        return HttpResponseUtil.ok(props);
     }
 }

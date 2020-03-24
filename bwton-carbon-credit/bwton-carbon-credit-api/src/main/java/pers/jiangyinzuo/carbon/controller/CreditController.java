@@ -10,7 +10,7 @@ import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.domain.vo.PickedRecordVO;
 import pers.jiangyinzuo.carbon.http.CustomRequestException;
-import pers.jiangyinzuo.carbon.http.HttpResponse;
+import pers.jiangyinzuo.carbon.http.HttpResponseUtil;
 import pers.jiangyinzuo.carbon.service.CreditService;
 import pers.jiangyinzuo.carbon.service.FriendService;
 import pers.jiangyinzuo.carbon.util.HttpHeaderUtil;
@@ -51,14 +51,14 @@ public class CreditController {
         try {
             creditRecordMode = CREDIT_RECORD_MODE.valueOf(mode);
         } catch (IllegalArgumentException e) {
-            return HttpResponse.NOT_FOUND;
+            return HttpResponseUtil.NOT_FOUND;
         }
 
         if (!userId.equals(HttpHeaderUtil.getUserId(authToken))) {
-            return HttpResponse.FORBIDDEN;
+            return HttpResponseUtil.FORBIDDEN;
         }
         LeaderBoardVO vo = creditService.getLeaderBoard(userId, creditRecordMode);
-        return HttpResponse.ok(vo);
+        return HttpResponseUtil.ok(vo);
     }
 
     /**
@@ -77,13 +77,13 @@ public class CreditController {
 
         // 该用户既不是小水滴本人也不是好友，没有查看权限
         if (!(uid.equals(userId) || friendService.isFriend(uid, userId))) {
-            return HttpResponse.FORBIDDEN;
+            return HttpResponseUtil.FORBIDDEN;
         }
 
         List<String> drops = creditService.getCreditDrops(userId);
         Map<String, Object> data = new HashMap<>(1);
         data.put("drops", drops);
-        return HttpResponse.ok(data);
+        return HttpResponseUtil.ok(data);
     }
 
     /**
@@ -95,16 +95,16 @@ public class CreditController {
     @PostMapping("/creditDrop")
     public ResponseEntity<Object> pickCreditDrop(@Validated @RequestBody PickCreditDropDTO pickCreditDropDTO) throws CustomRequestException {
         if (pickCreditDropDTO.isOutOfDate()) {
-            return HttpResponse.badRequest("小水滴已过期");
+            return HttpResponseUtil.badRequest("小水滴已过期");
         }
 
         if (pickCreditDropDTO.isSelf() || friendService.isFriend(pickCreditDropDTO.getPickedUserId(), pickCreditDropDTO.getPickerUserId())) {
             if (creditService.pickCreditDrop(pickCreditDropDTO)) {
-                return HttpResponse.ok(pickCreditDropDTO.isSelf() ? "采摘成功" : "帮助成功");
+                return HttpResponseUtil.ok(pickCreditDropDTO.isSelf() ? "采摘成功" : "帮助成功");
             }
-            return HttpResponse.ok("小水滴消失了");
+            return HttpResponseUtil.ok("小水滴消失了");
         } else { // 既不是自己也不是好友, 权限不够
-            return HttpResponse.FORBIDDEN;
+            return HttpResponseUtil.FORBIDDEN;
         }
     }
 
@@ -124,10 +124,10 @@ public class CreditController {
 
         // 该用户既不是小水滴本人也不是好友，没有查看权限
         if (!(userId.equals(queriedUserId) || friendService.isFriend(userId, queriedUserId))) {
-            return HttpResponse.FORBIDDEN;
+            return HttpResponseUtil.FORBIDDEN;
         }
 
         List<PickedRecordVO> pickedRecord = creditService.getPickedRecord(queriedUserId);
-        return HttpResponse.ok(pickedRecord);
+        return HttpResponseUtil.ok(pickedRecord);
     }
 }

@@ -12,7 +12,9 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -72,6 +74,31 @@ public class ExceptionRespondingHandler {
     public ResponseEntity<Map<String, Object>> handleUnexpectedException(Exception e) {
         log.error(e);
         return UNKNOWN_ERROR;
+    }
+
+    /**
+     * 全局捕获http request参数验证异常
+     * @param e
+     * @return 400 BAD_REQUEST
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseBody
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {
+        return HttpResponseUtil.badRequest(e.getMessage());
+    }
+
+    /**
+     * 全局捕获http request参数类型错误异常
+     * @return 400 BAD_REQUEST
+     * {
+     *   "errCode": -1,
+     *   "errMsg": "参数类型错误"
+     * }
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseBody
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatchException() {
+        return HttpResponseUtil.badRequest("参数类型错误");
     }
 
     private static Map<String, Object> createBody(String errMsg) {

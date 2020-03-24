@@ -52,7 +52,6 @@ public class AccountServiceImpl implements AccountService {
                     salt,
                     userRegisterDTO.getTelephone()
             );
-            userMapper.saveUserProps();
         } catch (DuplicateKeyException e) {
             throw new CustomRequestException(HttpStatus.OK, "手机号已被注册", 1);
         }

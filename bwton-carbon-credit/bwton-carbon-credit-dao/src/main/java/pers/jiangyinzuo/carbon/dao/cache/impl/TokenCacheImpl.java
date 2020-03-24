@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.BaseCache;
 import pers.jiangyinzuo.carbon.dao.cache.TokenCache;
 
-import static pers.jiangyinzuo.carbon.dao.cache.KeyBuilder.userSignatureKey;
+import static pers.jiangyinzuo.carbon.dao.cache.RedisKeyBuilder.userSignatureKey;
 
 /**
  * @author Jiang Yinzuo
