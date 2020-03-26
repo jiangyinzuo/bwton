@@ -2,7 +2,6 @@ package pers.jiangyinzuo.carbon.dao.cache;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +11,6 @@ import static pers.jiangyinzuo.carbon.dao.cache.RedisKeyBuilder.userCreditDrops;
 import static pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE.REMAIN;
 import static pers.jiangyinzuo.carbon.domain.CREDIT_RECORD_MODE.TOTAL;
 
-@SpringBootTest
 public class CreditCacheTest extends AbstractCacheTest {
     private CreditCache creditCache;
 

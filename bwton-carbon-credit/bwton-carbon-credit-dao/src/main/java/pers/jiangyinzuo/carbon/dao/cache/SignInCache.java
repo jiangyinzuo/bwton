@@ -32,6 +32,13 @@ public interface SignInCache {
     RedisFuture<List<String>> getReSignInDaysAsync(Long userId);
 
     /**
+     * 添加补签日期
+     * @param userId 用户ID
+     * @param resignInDay 补签日期
+     */
+    void addResignInDaysAsync(Long userId, long resignInDay);
+
+    /**
      * 获取用户连续登录天数
      * @param userId 用户ID
      * @return 连续登录天数
@@ -52,5 +59,10 @@ public interface SignInCache {
      */
     void addContinueDaysAsync(Long userId, long days);
 
-    void updateLastContinueDaysAsync(Long userId, int continueDaysBeforeSignIn);
+    /**
+     * 异步更新上个月之前的连续签到天数
+     * @param userId 用户ID
+     * @param newLastContinueDays 更新的值
+     */
+    void updateLastContinueDaysAsync(Long userId, int newLastContinueDays);
 }

@@ -37,6 +37,11 @@ public class SignInCacheImpl extends BaseCache implements SignInCache {
     }
 
     @Override
+    public void addResignInDaysAsync(Long userId, long resignInDay) {
+        cmdAsync.rpush(userSignInRe(userId), String.valueOf(resignInDay));
+    }
+
+    @Override
     public RedisFuture<String> getContinueSignInDaysAsync(Long userId) {
         return cmdAsync.get(userSignInContinue(userId));
     }
@@ -52,7 +57,7 @@ public class SignInCacheImpl extends BaseCache implements SignInCache {
     }
 
     @Override
-    public void updateLastContinueDaysAsync(Long userId, int continueDaysBeforeSignIn) {
-        cmdAsync.set(userSignInContinue(userId), String.valueOf(continueDaysBeforeSignIn));
+    public void updateLastContinueDaysAsync(Long userId, int newLastContinueDays) {
+        cmdAsync.set(userSignInContinue(userId), String.valueOf(newLastContinueDays));
     }
 }

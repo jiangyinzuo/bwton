@@ -9,7 +9,6 @@ import pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO;
 import pers.jiangyinzuo.carbon.domain.validation.annotation.ID;
 import pers.jiangyinzuo.carbon.domain.vo.LeaderBoardVO;
 import pers.jiangyinzuo.carbon.domain.vo.PickedRecordVO;
-import pers.jiangyinzuo.carbon.http.CustomRequestException;
 import pers.jiangyinzuo.carbon.http.HttpResponseUtil;
 import pers.jiangyinzuo.carbon.service.CreditService;
 import pers.jiangyinzuo.carbon.service.FriendService;
@@ -81,8 +80,10 @@ public class CreditController {
         }
 
         List<String> drops = creditService.getCreditDrops(userId);
+        long coveredTime = creditService.getCoveredTime(userId);
         Map<String, Object> data = new HashMap<>(1);
         data.put("drops", drops);
+        data.put("coveredTime", coveredTime);
         return HttpResponseUtil.ok(data);
     }
 
@@ -93,9 +94,13 @@ public class CreditController {
      * @return
      */
     @PostMapping("/creditDrop")
-    public ResponseEntity<Object> pickCreditDrop(@Validated @RequestBody PickCreditDropDTO pickCreditDropDTO) throws CustomRequestException {
+    public ResponseEntity<Object> pickCreditDrop(@Validated @RequestBody PickCreditDropDTO pickCreditDropDTO) {
         if (pickCreditDropDTO.isOutOfDate()) {
             return HttpResponseUtil.badRequest("小水滴已过期");
+        }
+
+        if (pickCreditDropDTO.isStolen() && creditService.getCoveredTime(pickCreditDropDTO.getPickedUserId()) > 0) {
+            return HttpResponseUtil.ok(1, "正在受保护，无法偷取");
         }
 
         if (pickCreditDropDTO.isSelf() || friendService.isFriend(pickCreditDropDTO.getPickedUserId(), pickCreditDropDTO.getPickerUserId())) {

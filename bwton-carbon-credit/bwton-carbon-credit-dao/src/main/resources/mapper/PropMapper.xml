@@ -31,11 +31,16 @@
 
     </select>
     <insert id="addPropsCount">
+
+        INSERT INTO bwton_user_prop_relation(user_id, prop_id, prop_count)
+        VALUES
         <foreach collection="props" item="prop" separator=",">
-            INSERT INTO bwton_user_prop_relation(user_id, prop_id, prop_count)
-            VALUES (#{userId}, #{prop.propId}, #{prop.propCount})
-            ON DUPLICATE KEY
-            UPDATE prop_count = prop_count + #{prop.propCount}
+            (#{userId}, #{prop.propId}, #{prop.propCount})
+        </foreach>
+        ON DUPLICATE KEY
+        UPDATE
+        <foreach collection="props" item="prop" separator=",">
+            prop_count = prop_count + #{prop.propCount}
         </foreach>
     </insert>
 </mapper>

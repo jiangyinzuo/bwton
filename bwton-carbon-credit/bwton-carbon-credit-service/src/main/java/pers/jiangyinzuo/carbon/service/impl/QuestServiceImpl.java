@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pers.jiangyinzuo.carbon.common.StringUtil;
 import pers.jiangyinzuo.carbon.dao.cache.QuestCache;
 import pers.jiangyinzuo.carbon.dao.cache.SignInCache;
+import pers.jiangyinzuo.carbon.dao.mapper.PropMapper;
 import pers.jiangyinzuo.carbon.domain.entity.QuestProgress;
 import pers.jiangyinzuo.carbon.domain.vo.SignInVO;
 import pers.jiangyinzuo.carbon.service.PropService;
@@ -18,6 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static pers.jiangyinzuo.carbon.domain.entity.Prop.PROP_ID.RE_SIGN_IN_CARD;
+
 /**
  * @author Jiang Yinzuo
  */
@@ -27,12 +30,14 @@ public class QuestServiceImpl implements QuestService {
     private QuestCache questCache;
     private SignInCache signInCache;
     private PropService propService;
+    private PropMapper propMapper;
 
     @Autowired
-    public QuestServiceImpl(QuestCache questCache, SignInCache signInCache, PropService propService) {
+    public QuestServiceImpl(QuestCache questCache, SignInCache signInCache, PropService propService, PropMapper propMapper) {
         this.questCache = questCache;
         this.signInCache = signInCache;
         this.propService = propService;
+        this.propMapper = propMapper;
     }
 
     @Override
@@ -83,7 +88,7 @@ public class QuestServiceImpl implements QuestService {
         // 补签
         List<String> reSignInDays = signInCache.getReSignInDaysAsync(userId).get(5, TimeUnit.SECONDS);
 
-        // 补签次数未超过3次
+        // 补签次数超过3次
         assert reSignInDays != null;
         if (reSignInDays.size() >= 3) {
             return SignInVO.limitUseOfResignCard();
@@ -93,10 +98,12 @@ public class QuestServiceImpl implements QuestService {
         if (propService.getResignInCard(userId).getPropCount() <= 0) {
             return SignInVO.useOutOfResignCard();
         }
+
         RedisFuture<String> continueSignInDaysFuture = signInCache.getContinueSignInDaysAsync(userId);
         RedisFuture<String> lastContinueDaysFuture = signInCache.getLastContinueSignInDaysAsync(userId);
+
         // 补签卡数量大于0, 消耗一张补签卡
-        propService.decrResignInCard(userId);
+        propMapper.decrPropsCount(userId, RE_SIGN_IN_CARD.id, 1);
 
         LettuceFutures.awaitAll(5, TimeUnit.SECONDS, continueSignInDaysFuture, lastContinueDaysFuture);
 

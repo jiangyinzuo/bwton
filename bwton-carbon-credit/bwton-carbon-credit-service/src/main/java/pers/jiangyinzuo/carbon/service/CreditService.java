@@ -48,4 +48,6 @@ public interface CreditService {
      * @return
      */
     List<PickedRecordVO> getPickedRecord(Long queriedUserId);
+
+    long getCoveredTime(Long userId);
 }

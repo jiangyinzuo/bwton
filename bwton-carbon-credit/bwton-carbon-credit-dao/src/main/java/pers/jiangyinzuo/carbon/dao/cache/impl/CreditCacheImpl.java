@@ -3,6 +3,7 @@ package pers.jiangyinzuo.carbon.dao.cache.impl;
 import io.lettuce.core.LettuceFutures;
 import io.lettuce.core.Range;
 import io.lettuce.core.RedisFuture;
+import io.lettuce.core.ScoredValue;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import pers.jiangyinzuo.carbon.dao.cache.BaseCache;
@@ -139,5 +140,41 @@ public class CreditCacheImpl extends BaseCache implements CreditCache {
         // 每次仅保留最新的7条记录
         cmdAsync.lpush(dropPickedRecordKey, pickCreditDropDTO.pickRecord()).thenRun(() -> cmdAsync.ltrim(dropPickedRecordKey, 0, RECORDS_KEEP_COUNT - 1));
 
+    }
+
+    @Override
+    public void updateMatureTimeAsync(Long userId) {
+        List<String> creditDrops = getCreditDrops(userId);
+        String key = userCreditDrops(userId);
+        cmdSync.del(key);
+        List<ScoredValue<String>> scoredValues = new ArrayList<>(creditDrops.size());
+
+        long score;
+        long currentTime = System.currentTimeMillis();
+        String[] split;
+        for (String creditDrop : creditDrops) {
+            split = creditDrop.split("\\.", 2);
+            score = (Long.parseLong(split[0]) + currentTime) / 2;
+            scoredValues.add(ScoredValue.just(score, split[1]));
+        }
+
+        cmdAsync.zadd(key, scoredValues);
+    }
+
+    @Override
+    public boolean setCover(Long userId) {
+        final String key = userCreditIsCovered(userId);
+        long ttl = cmdSync.ttl(key);
+        if (ttl == -2) {
+            return false;
+        }
+        cmdSync.setbit(key, 0, 1);
+        cmdAsync.expire(key, 24L * 3600);
+        return true;
+    }
+
+    @Override
+    public long getCoveredTime(Long userId) {
+        return cmdSync.ttl(userCreditIsCovered(userId));
     }
 }

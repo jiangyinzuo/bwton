@@ -80,4 +80,24 @@ public interface CreditCache {
      * @param pickCreditDropDTO
      */
     void addPickedRecordAsync(PickCreditDropDTO pickCreditDropDTO);
+
+    /**
+     * 更新所有积分小水滴时间
+     * @param userId 用户ID
+     */
+    void updateMatureTimeAsync(Long userId);
+
+    /**
+     * 该用户是否受保护
+     * @param userId 用户ID
+     * @return 受保护：true
+     */
+    boolean setCover(Long userId);
+
+    /**
+     * 获取小水滴受保护时间
+     * @param userId 用户ID
+     * @return -2：未受保护；大于0的数：剩余保护时间（单位 秒）
+     */
+    long getCoveredTime(Long userId);
 }

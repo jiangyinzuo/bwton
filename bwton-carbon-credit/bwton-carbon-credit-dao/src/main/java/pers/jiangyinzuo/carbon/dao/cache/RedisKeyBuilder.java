@@ -11,7 +11,8 @@ public class RedisKeyBuilder {
     private static final String RECORD = "record";
     private static final String SIGN_IN = ":signin:";
 
-    private RedisKeyBuilder() {}
+    private RedisKeyBuilder() {
+    }
 
     public static String userCredit(Long userId, String span) {
         return BWTON_USER + userId + CREDIT + span;
@@ -19,6 +20,7 @@ public class RedisKeyBuilder {
 
     /**
      * 用户被采摘碳积分小水滴记录的key
+     *
      * @param collectedUserId 被采摘的用户ID
      * @return key
      */
@@ -52,5 +54,9 @@ public class RedisKeyBuilder {
 
     public static String userSignInLast(Long userId) {
         return BWTON_USER + userId + SIGN_IN + "last";
+    }
+
+    public static String userCreditIsCovered(Long userId) {
+        return BWTON_USER + userId + CREDIT + "cv";
     }
 }

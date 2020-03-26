@@ -78,4 +78,10 @@ public class CreditServiceImpl implements CreditService {
         List<String> rawResult = creditCache.getRawPickedRecord(queriedUserId);
         return createRecords(queriedUserId, rawResult);
     }
+
+    @Override
+    public long getCoveredTime(Long userId) {
+        long coveredTime = creditCache.getCoveredTime(userId);
+        return coveredTime == -2 ? 0 : coveredTime;
+    }
 }

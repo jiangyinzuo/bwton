@@ -18,6 +18,13 @@ public interface PropService {
     List<Prop> getProps(Long userId);
 
     /**
+     * 根据ID获取道具
+     * @param userId 用户ID
+     * @return
+     */
+    Prop getPropById(Long userId, Long propId);
+
+    /**
      * 获取用户补签卡
      * @param userId 用户ID
      * @return Prop实体类
@@ -25,10 +32,17 @@ public interface PropService {
     Prop getResignInCard(Long userId);
 
     /**
-     * 用户使用一张补签卡
+     * 加速积分小水滴成熟
      * @param userId 用户ID
      */
-    void decrResignInCard(Long userId);
+    void speedDrops(Long userId);
 
     void addPropsGift(Long userId, PropCountDTO propCountDTO);
+
+    /**
+     * 保护积分小水滴
+     * @param userId 用户ID
+     * @return 是：使用成功；否：已经有保护了，不能叠加
+     */
+    boolean coverDrops(Long userId);
 }
