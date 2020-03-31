@@ -46,16 +46,14 @@ public class CreditController {
             @RequestHeader("Authorization") String authToken,
             @Validated @ID @RequestParam Long userId,
             @PathVariable String mode) {
-        CREDIT_RECORD_MODE creditRecordMode;
-        try {
-            creditRecordMode = CREDIT_RECORD_MODE.valueOf(mode);
-        } catch (IllegalArgumentException e) {
+
+        if (!CREDIT_RECORD_MODE.contains(mode)) {
             return HttpResponseUtil.NOT_FOUND;
         }
-
         if (!userId.equals(HttpHeaderUtil.getUserId(authToken))) {
             return HttpResponseUtil.FORBIDDEN;
         }
+        CREDIT_RECORD_MODE creditRecordMode = CREDIT_RECORD_MODE.valueOf(mode.toUpperCase());
         LeaderBoardVO vo = creditService.getLeaderBoard(userId, creditRecordMode);
         return HttpResponseUtil.ok(vo);
     }
