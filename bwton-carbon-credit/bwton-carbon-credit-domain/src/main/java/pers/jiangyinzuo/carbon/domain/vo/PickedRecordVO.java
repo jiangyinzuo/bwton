@@ -1,5 +1,7 @@
 package pers.jiangyinzuo.carbon.domain.vo;
 
+import pers.jiangyinzuo.carbon.common.StringUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,15 @@ import static pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO.SUB_REC;
  * @author Jiang Yinzuo
  * @see pers.jiangyinzuo.carbon.domain.dto.PickCreditDropDTO
  */
-public class PickedRecordVO {
+public record PickedRecordVO(
+        // 采摘动作
+        PICK_ACTION pickAction,
+
+        // 积分小水滴值
+        Integer dropValue,
+
+        // 采摘日期"yyyy-mm-dd"
+        String date) {
 
     enum PICK_ACTION {
         /**
@@ -20,21 +30,6 @@ public class PickedRecordVO {
     }
 
     /**
-     * 采摘动作
-     */
-    private PICK_ACTION pickAction;
-
-    /**
-     * 积分小水滴值
-     */
-    private Integer dropValue;
-
-    /**
-     * 采摘日期"yyyy-mm-dd"
-     */
-    private String date;
-
-    /**
      * 将redis中保存的原始记录转为PickedRecordVO
      *
      * @param queriedUserId 被查询记录的用户ID
@@ -42,27 +37,24 @@ public class PickedRecordVO {
      * @return PickedRecordVO
      */
     public static PickedRecordVO createRecord(Long queriedUserId, String rawResults) {
-        PickedRecordVO record = new PickedRecordVO();
 
         // 原始记录的格式为`{采摘者ID}["+", "-"]{小水滴碳积分值}["+", "-"]{年-月-日}`
         String[] result;
-
+        PICK_ACTION pickAction;
         Long pickerUserId;
         if (rawResults.contains(ADD_REC)) {
             result = rawResults.split("\\+", 3);
             pickerUserId = Long.parseLong(result[0]);
             if (pickerUserId.equals(queriedUserId)) {
-                record.pickAction = PICK_ACTION.SELF;
+                pickAction = PICK_ACTION.SELF;
             } else {
-                record.pickAction = PICK_ACTION.HELP;
+                pickAction = PICK_ACTION.HELP;
             }
         } else {
             result = rawResults.split(SUB_REC, 3);
-            record.pickAction = PICK_ACTION.STOLEN;
+            pickAction = PICK_ACTION.STOLEN;
         }
-        record.dropValue = Integer.parseInt(result[1]);
-        record.date = result[2];
-        return record;
+        return new PickedRecordVO(pickAction, StringUtil.toInteger(result[1]), result[2]);
     }
 
     public static List<PickedRecordVO> createRecords(Long queriedUserId, List<String> rawResults) {
@@ -71,28 +63,5 @@ public class PickedRecordVO {
             pickedRecords.add(createRecord(queriedUserId, rawResult));
         }
         return pickedRecords;
-    }
-
-    private PickedRecordVO() {}
-
-    public PICK_ACTION getPickAction() {
-        return pickAction;
-    }
-
-    public Integer getDropValue() {
-        return dropValue;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    @Override
-    public String toString() {
-        return "PickedRecordVO{" +
-                "pickAction=" + pickAction +
-                ", dropValue=" + dropValue +
-                ", date='" + date + '\'' +
-                '}';
     }
 }

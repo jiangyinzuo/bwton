@@ -95,7 +95,7 @@ public class QuestServiceImpl implements QuestService {
         }
 
         // 补签卡数量不足
-        if (propService.getResignInCard(userId).getPropCount() <= 0) {
+        if (propService.getResignInCard(userId).propCount() <= 0) {
             return SignInVO.useOutOfResignCard();
         }
 

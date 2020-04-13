@@ -1,6 +1,7 @@
 const axios = require('axios');
 
-const URL_PREFIX = 'http://localhost:8089/api/v1.0';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+const URL_PREFIX = 'https://localhost:8089/api/v1.0';
 
 function request({method, url, data = null, params = null, authToken = null}) {
     axios({
@@ -20,6 +21,7 @@ function request({method, url, data = null, params = null, authToken = null}) {
         const response = err.response;
         console.log(response.status)
         console.log(response.data)
+        console.log(err.request.res.httpVersion)
     })
 }
 

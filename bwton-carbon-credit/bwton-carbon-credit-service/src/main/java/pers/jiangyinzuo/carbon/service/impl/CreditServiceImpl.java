@@ -38,7 +38,7 @@ public class CreditServiceImpl implements CreditService {
 
         List<Long> userIdList = new ArrayList<>();
         for (User user : userList) {
-            userIdList.add(user.getUserId());
+            userIdList.add(user.userId());
         }
 
         List<Long> creditList = creditCache.getUsersCredits(userIdList, mode);

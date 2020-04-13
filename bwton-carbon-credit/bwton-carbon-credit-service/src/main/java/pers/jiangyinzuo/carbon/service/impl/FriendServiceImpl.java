@@ -27,7 +27,7 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public boolean addFriend(FriendshipDTO friendshipDTO) {
-        if (Boolean.TRUE.equals(userMapper.exists(friendshipDTO.getFriendId()))) {
+        if (Boolean.TRUE.equals(userMapper.exists(friendshipDTO.friendId()))) {
             Long minUserId = friendshipDTO.getMinId();
             Long maxUserId = friendshipDTO.getMaxId();
             friendMapper.addFriends(minUserId, maxUserId);

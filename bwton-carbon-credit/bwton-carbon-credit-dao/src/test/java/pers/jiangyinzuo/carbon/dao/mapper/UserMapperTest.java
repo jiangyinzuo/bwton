@@ -4,11 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import pers.jiangyinzuo.carbon.common.security.SaltGenerator;
-import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
+import pers.jiangyinzuo.carbon.domain.bo.UserLoginBO;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserMapperTest extends BaseMybatisTest {
@@ -18,7 +15,7 @@ public class UserMapperTest extends BaseMybatisTest {
 
     @Test
     public void testLogin() {
-        UserLoginDTO userLoginDTO = userMapper.getUserAccountByTelephone("12334554433");
+        UserLoginBO userLoginBO = userMapper.getUserAccountByTelephone("12334554433");
     }
 
     @Test

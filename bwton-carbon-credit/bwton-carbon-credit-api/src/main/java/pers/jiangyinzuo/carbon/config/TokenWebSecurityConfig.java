@@ -56,6 +56,7 @@ public class TokenWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
+        // 不需要验证token的路由
         web.ignoring().antMatchers("/login/**", "/register/**");
     }
 

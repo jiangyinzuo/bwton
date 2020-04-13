@@ -2,8 +2,18 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="pers.jiangyinzuo.carbon.dao.mapper.UserMapper">
-    <select id="getUserAccountByTelephone" resultType="pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO">
+
+    <resultMap id="userLoginBO" type="pers.jiangyinzuo.carbon.domain.bo.UserLoginBO">
+        <constructor>
+            <idArg column="user_id" javaType="long" name="userId" />
+            <arg column="telephone" javaType="String" name="telephone" />
+            <arg column="salt" javaType="_byte[]" name="salt" />
+            <arg column="cipher" javaType="String" name="cipher" />
+        </constructor>
+    </resultMap>
+    <select id="getUserAccountByTelephone" resultMap="userLoginBO">
         SELECT user_id, telephone, cipher, salt FROM bwton_user WHERE telephone = #{telephone}
     </select>
     <insert id="saveUserAccount">

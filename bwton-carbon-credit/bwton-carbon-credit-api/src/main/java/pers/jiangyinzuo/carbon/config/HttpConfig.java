@@ -1,8 +1,14 @@
 package pers.jiangyinzuo.carbon.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -10,16 +16,14 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Set;
 
 /**
- * 跨域设置
- *
  * @author Jiang Yinzuo
  */
 @Configuration
 @EnableConfigurationProperties(AllowedOriginProperties.class)
-@ConditionalOnProperty(prefix = "spring.profiles", name = "active", havingValue = "dev")
 public class HttpConfig extends WebMvcConfigurationSupport {
 
     private final AllowedOriginProperties allowedOriginProperties;
@@ -31,6 +35,7 @@ public class HttpConfig extends WebMvcConfigurationSupport {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
+                .allowCredentials(true)
                 .allowedHeaders("*")
                 .allowedMethods("*")
                 .allowedOrigins(allowedOriginProperties.getAllowedOrigins());
@@ -41,6 +46,23 @@ public class HttpConfig extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new RefererInterceptor(allowedOriginProperties))
                 .addPathPatterns("/**");
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(converter());
+    }
+
+    /**
+     * 配置ObjectMapper, 使Jackson能反序列化/序列化final fields
+     * @return MappingJackson2HttpMessageConverter
+     */
+    @Bean
+    public MappingJackson2HttpMessageConverter converter() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new ParameterNamesModule());
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        return new MappingJackson2HttpMessageConverter(mapper);
     }
 }
 
@@ -53,8 +75,18 @@ class RefererInterceptor extends HandlerInterceptorAdapter {
         allowedOrigins = Set.of(allowedOriginProperties.getAllowedOrigins());
     }
 
+    /**
+     * 验证referer 防盗链
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (allowedOrigins.contains("*")) {
+            return true;
+        }
         String referer = request.getHeader("referer");
         if (referer == null) {
             response.setStatus(404);

@@ -73,6 +73,7 @@ public class ExceptionRespondingHandler {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleUnexpectedException(Exception e) {
         log.error(e);
+        e.printStackTrace();
         return UNKNOWN_ERROR;
     }
 

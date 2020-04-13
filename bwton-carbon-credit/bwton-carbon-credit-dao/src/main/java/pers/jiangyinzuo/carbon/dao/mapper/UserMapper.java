@@ -1,7 +1,7 @@
 package pers.jiangyinzuo.carbon.dao.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
+import pers.jiangyinzuo.carbon.domain.bo.UserLoginBO;
 
 /**
  * @author Jiang Yinzuo
@@ -15,7 +15,7 @@ public interface UserMapper {
      * @param telephone 手机号
      * @return 用户账号DTO
      */
-    UserLoginDTO getUserAccountByTelephone(String telephone);
+    UserLoginBO getUserAccountByTelephone(String telephone);
 
     /**
      * 添加用户账号

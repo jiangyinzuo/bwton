@@ -27,8 +27,8 @@ public class PropMapperTest extends BaseMybatisTest {
         System.out.println(propsAfter);
         for (Prop prop1 : propsAfter) {
             for (Prop prop2 : propsBefore) {
-                if (prop1.getPropId().equals(prop2.getPropId())) {
-                    assertTrue(prop2.getPropCount() < prop1.getPropCount());
+                if (prop1.propId().equals(prop2.propId())) {
+                    assertTrue(prop2.propCount() < prop1.propCount());
                 }
             }
         }
@@ -42,13 +42,13 @@ public class PropMapperTest extends BaseMybatisTest {
 
         Prop propBefore = propMapper.getPropById(1L, 2L);
 
-        if (propBefore.getPropCount() > 0) {
+        if (propBefore.propCount() > 0) {
             propMapper.decrPropsCount(1L, 2L, 1);
         }
         Prop propAfter = propMapper.getPropById(1L, 2L);
 
-        if (propBefore.getPropCount() > 0) {
-            assertEquals(-1, propAfter.getPropCount() - propBefore.getPropCount());
+        if (propBefore.propCount() > 0) {
+            assertEquals(-1, propAfter.propCount() - propBefore.propCount());
         }
     }
 }

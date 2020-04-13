@@ -52,13 +52,14 @@ public class PropController {
             @NotNull @Min(1) Integer useCount) {
         Long userId = HttpHeaderUtil.getUserId(authToken);
         Prop prop = propService.getPropById(userId, propId);
-        if (prop == null || prop.getPropCount().equals(0L)) {
+        if (prop == null || prop.propCount() < useCount) {
             return HttpResponseUtil.ok(1, "道具数量不足");
         }
-
-        if (prop.getPropId().equals(SPEEDER.id)) {
+        // TODO 部分道具一次只能使用一个
+        // TODO 使用多个道具
+        if (prop.propId().equals(SPEEDER.id)) {
             propService.speedDrops(userId);
-        } else if (prop.getPropId().equals(COVER.id)) {
+        } else if (prop.propId().equals(COVER.id)) {
             boolean isCovered = propService.coverDrops(userId);
             if (!isCovered) {
                 return HttpResponseUtil.ok(2, "正在保护状态，不能叠加");

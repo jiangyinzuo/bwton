@@ -15,7 +15,6 @@
         <module>bwton-carbon-credit-service</module>
         <module>bwton-carbon-credit-mq</module>
         <module>bwton-carbon-credit-remote-api</module>
-        <module>bwton-carbon-credit-schedule</module>
     </modules>
 
     <name>bwton-carbon-credit</name>
@@ -32,9 +31,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>13</java.version>
-        <maven.compiler.source>13</maven.compiler.source>
-        <maven.compiler.target>13</maven.compiler.target>
+        <java.version>14</java.version>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
         <springboot.version>2.2.3.RELEASE</springboot.version>
         <docker.image.prefix>springboot</docker.image.prefix>
     </properties>
@@ -212,9 +211,9 @@
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>1.11</version>
                 <configuration>
-                    <complianceLevel>13</complianceLevel>
-                    <source>13</source>
-                    <target>13</target>
+                    <complianceLevel>${java.version}</complianceLevel>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
 

@@ -15,6 +15,8 @@ import static pers.jiangyinzuo.carbon.domain.entity.Prop.PROP_ID.*;
  */
 public class PropCountDTO {
 
+    private final List<Prop> props = new ArrayList<>();
+
     /**
      * 签到奖励
      */
@@ -34,7 +36,6 @@ public class PropCountDTO {
             .plusProp(LOTTERY.id, 2L)
             .plusProp(SCHEDULE_CARD.id, 2L);
 
-
     public static class Prop {
         public final Long propId;
         private Long propCount;
@@ -44,8 +45,6 @@ public class PropCountDTO {
             this.propCount = propCount;
         }
     }
-
-    private final List<Prop> props = new ArrayList<>();
 
     public PropCountDTO plusProp(Long propId, Long propCount) {
         return plusProp(new Prop(propId, propCount));

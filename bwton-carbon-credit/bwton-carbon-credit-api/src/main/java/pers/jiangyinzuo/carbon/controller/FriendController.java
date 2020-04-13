@@ -32,7 +32,7 @@ public class FriendController {
     ) {
         Long userId = HttpHeaderUtil.getUserId(authToken);
 
-        if (!friendshipDTO.getUserId().equals(userId)) {
+        if (!friendshipDTO.userId().equals(userId)) {
             return HttpResponseUtil.FORBIDDEN;
         }
         if (!friendshipDTO.isValid()) {

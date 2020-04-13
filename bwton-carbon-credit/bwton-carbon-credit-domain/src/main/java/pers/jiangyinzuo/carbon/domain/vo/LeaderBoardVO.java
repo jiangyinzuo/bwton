@@ -31,10 +31,10 @@ public class LeaderBoardVO {
         if (userList.isEmpty()) {
             return vo;
         }
-        vo.setUser(new LeaderBoardUserDTO((userList.get(0)), creditList.get(0)));
+        vo.setUser(LeaderBoardUserDTO.getInstance((userList.get(0)), creditList.get(0)));
         int i = 0;
         for (User user : userList) {
-            vo.leaderboard.add(new LeaderBoardUserDTO(user, creditList.get(i++)));
+            vo.leaderboard.add(LeaderBoardUserDTO.getInstance(user, creditList.get(i++)));
         }
         return vo;
     }

@@ -1,16 +1,12 @@
 package pers.jiangyinzuo.carbon.domain.entity;
 
 
-import lombok.Data;
-
 /**
  * 道具
  *
  * @author Jiang Yinzuo
  */
-@Data
-public class Prop {
-
+public record Prop(Long propId, String propName, Long propCount){
     public enum PROP_ID {
         /**
          * 道具ID的枚举
@@ -22,8 +18,4 @@ public class Prop {
             id = propId;
         }
     }
-
-    private Long propId;
-    private String propName;
-    private Long propCount;
 }

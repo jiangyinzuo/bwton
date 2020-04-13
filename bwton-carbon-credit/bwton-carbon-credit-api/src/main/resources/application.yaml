@@ -5,6 +5,10 @@ server:
   servlet:
     context-path: "/api/v1.0"
   max-http-header-size: 80KB
+  ssl:
+    enabled: true
+  http2:
+    enabled: true
 logging:
   config: classpath:log4j2.xml
 spring:
@@ -16,6 +20,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

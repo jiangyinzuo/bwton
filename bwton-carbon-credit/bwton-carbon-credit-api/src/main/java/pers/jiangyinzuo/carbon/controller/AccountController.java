@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pers.jiangyinzuo.carbon.domain.dto.UserLoginDTO;
 import pers.jiangyinzuo.carbon.domain.dto.UserRegisterDTO;
+import pers.jiangyinzuo.carbon.domain.vo.LoginVO;
 import pers.jiangyinzuo.carbon.http.CustomRequestException;
 import pers.jiangyinzuo.carbon.http.HttpResponseUtil;
 import pers.jiangyinzuo.carbon.service.AccountService;
@@ -53,16 +54,14 @@ public class AccountController {
      * @param userLoginDTO
      * @return
      */
-    @PostMapping("/login")
+    @PostMapping(value = "/login")
     public ResponseEntity<Object> login(
             @Validated @RequestBody UserLoginDTO userLoginDTO
             ) {
         Long userId = accountService.login(userLoginDTO);
         if (userId > 0) {
-            Map<String, Object> data = new HashMap<>(1);
-            data.put("token", tokenService.genBase64Token(userId.toString()));
-            data.put("userId", userId);
-            return HttpResponseUtil.ok(data);
+            String token = tokenService.genBase64Token(userId.toString());
+            return HttpResponseUtil.ok(new LoginVO(userId, token));
         } else {
             String errMsg = userId == AccountService.PASSWORD_ERROR ? "密码错误" : "账号不存在";
             return HttpResponseUtil.ok(1, errMsg);
