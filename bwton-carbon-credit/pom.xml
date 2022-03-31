@@ -34,7 +34,7 @@
         <java.version>14</java.version>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
-        <springboot.version>2.2.3.RELEASE</springboot.version>
+        <springboot.version>2.5.12</springboot.version>
         <docker.image.prefix>springboot</docker.image.prefix>
     </properties>
 
